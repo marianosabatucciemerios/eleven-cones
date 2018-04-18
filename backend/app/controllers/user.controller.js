@@ -36,7 +36,7 @@ exports.findAll = function (req, res) {
     });
 };
 
-exports.findOne = function (req, res) {
+exports.findById = function (req, res) {
     // Find a single user with a userID
     User.findById(req.params.userID, function (err, user) {
         if (err) {

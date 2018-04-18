@@ -9,7 +9,7 @@ module.exports = function(app) {
     app.get('/v1/teams', teams.findAll);
 
     // Retrieve a single Note with noteId
-    app.get('/v1/teams/:teamId', teams.findOne);
+    app.get('/v1/teams/:teamId', teams.findById);
 
     // Update a Note with noteId
     app.put('/v1/teams/:teamId', teams.update);

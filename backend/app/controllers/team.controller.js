@@ -36,7 +36,7 @@ exports.findAll = function (req, res) {
     });
 };
 
-exports.findOne = function (req, res) {
+exports.findById = function (req, res) {
     // Find a single team with a teamId
     Team.findById(req.params.teamId, function (err, team) {
         if (err) {
