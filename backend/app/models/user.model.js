@@ -1,26 +1,27 @@
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-const UserSchema = mongoose.Schema({
-    info: {
-        firstName: { type: String, required: true },
-        lastName: { type: String, required: true },
-        height: Number,
-        weight: Number,
-        birthday: Date,
-        foot: String,
-        picture: String,
-        position: String,
-        number: Number
+var UserSchema = new Schema({
+    firstName: String,
+    lastName: String,
+    picture: {
+        data: Buffer,
+        contentType: String
     },
+    birthday: Date,
+    age: Number,
+    email: { type: String, unique: true, lowercase: true },
     local: {
-        email: String,
         password: String,
+        passwordReset: {
+            token: String,
+            expired: Date
+        }
     },
     facebook: {
         id: String,
         token: String,
         name: String,
-        email: String
     },
     twitter: {
         id: String,
@@ -31,9 +32,11 @@ const UserSchema = mongoose.Schema({
     google: {
         id: String,
         token: String,
-        email: String,
         name: String
-    }
+    },
+    defaultRole: String,
+    roles: [],
+    isActive: Boolean
 }, {
         timestamps: true
     });
