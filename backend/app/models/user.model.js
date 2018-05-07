@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var bcrypt = require('bcryptjs');
 
-var UserSchema = new Schema({
+var userSchema = new Schema({
     firstName: String,
     lastName: String,
     picture: {
@@ -41,4 +42,12 @@ var UserSchema = new Schema({
         timestamps: true
     });
 
-module.exports = mongoose.model('User', UserSchema);
+
+userSchema.statics.findByEmail = function (email, cb) {
+    return this.findOne({ 'email': email }, cb);
+};
+
+
+
+
+module.exports = mongoose.model('User', userSchema);
