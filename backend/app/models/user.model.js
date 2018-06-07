@@ -10,8 +10,11 @@ var userSchema = new Schema({
         contentType: String
     },
     birthday: Date,
-    age: Number,
-    email: { type: String, unique: true, lowercase: true },
+    email: {
+        type: String,
+        unique: true,
+        lowercase: true
+    },
     local: {
         password: String,
         passwordReset: {
@@ -35,8 +38,26 @@ var userSchema = new Schema({
         token: String,
         name: String
     },
-    defaultRole: String,
-    roles: [],
+    roles: [{
+        id: { type: Schema.Types.ObjectId, ref: 'Role' },
+        code: String,
+        name: String,
+        shortName: String,
+        default: Boolean
+    }],
+    managesTo: [{
+        teamId: { type: Schema.Types.ObjectId, ref: 'Team' }
+    }],
+    playsTo: [{
+        teamId: { type: Schema.Types.ObjectId, ref: 'Team' },
+        shirtNumber: Number,
+        position: {
+            positionId: { type: Schema.Types.ObjectId, ref: 'Position' },
+            code: String,
+            name: String,
+            shortName: String
+        }
+    }],
     isActive: Boolean
 }, {
         timestamps: true

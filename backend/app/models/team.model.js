@@ -2,10 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var TeamSchema = new Schema({
-    sport: {
-        code: String,
-        name: String
-    },
     code: String,
     name: String,
     description: String,
@@ -22,9 +18,17 @@ var TeamSchema = new Schema({
         data: Buffer,
         contentType: String
     },
+    sport: {
+        code: String,
+        name: String
+    },
     //lineups: [{type: Schema.Types.ObjectId, ref: 'Lineup'}],
-    squad: [{type: Schema.Types.ObjectId, ref: 'Player'}],
-    managerId: {type: Schema.Types.ObjectId, ref: 'Manager'} 
+    squad: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    manager: {
+        managerId: { type: Schema.Types.ObjectId, ref: 'Manager' },
+        firstName: String,
+        lastName: String
+    } 
 }, {
     timestamps: true
 });
