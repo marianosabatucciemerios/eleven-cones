@@ -3,9 +3,11 @@ var Schema = mongoose.Schema;
 
 var SportSchema = new Schema({
     code: String,
-    name: String,
-    shortName: String,
-    description: String,
+    oder: Number,
+    lang: {
+        en: String,
+        es: String
+    },
     isActive: Boolean
 }, {
     timestamps: true

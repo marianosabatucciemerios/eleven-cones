@@ -6,31 +6,32 @@ var TeamSchema = new Schema({
     name: String,
     description: String,
     yearBuilt: Date,
-    emblem: {
-        data: Buffer,
-        contentType: String
+    colors: {
+        primary: String,
+        secondary: String
     },
-    shirt: {
-        data: Buffer,
-        contentType: String
-    },
-    cover: {
-        data: Buffer,
-        contentType: String
-    },
+    emblem: { data: Buffer, contentType: String },
+    shirt: { data: Buffer, contentType: String },
+    cover: { data: Buffer, contentType: String },
     sport: {
+        id: { type: Schema.Types.ObjectId, ref: 'Sport' },
         code: String,
-        name: String
+        lang: {
+            en: String,
+            es: String
+        }
     },
     //lineups: [{type: Schema.Types.ObjectId, ref: 'Lineup'}],
-    squad: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    squad: [
+        { type: Schema.Types.ObjectId, ref: 'User' }
+    ],
     manager: {
-        managerId: { type: Schema.Types.ObjectId, ref: 'Manager' },
+        id: { type: Schema.Types.ObjectId, ref: 'Manager' },
         firstName: String,
         lastName: String
-    } 
+    }
 }, {
-    timestamps: true
-});
+        timestamps: true
+    });
 
 module.exports = mongoose.model('Team', TeamSchema);

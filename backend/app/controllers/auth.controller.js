@@ -3,9 +3,9 @@ var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var config = require('../../config/passport.config.js');
 
-exports.registerLocal = function (req, res) {
+exports.singupLocal = function (req, res) {
 
-    var hashedPassword = bcrypt.hashSync(req.body.password, 8);
+    var hashedPassword = bcrypt.hashSync(req.body.password, 10);
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     // -- VALIDATIONS -- //
@@ -71,11 +71,9 @@ exports.registerLocal = function (req, res) {
 
         if (!user) {
             User.create({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
                 email: req.body.email,
-                info: {
-                    firstName: req.body.firstName,
-                    lastName: req.body.lastName
-                },
                 local: {
                     password: hashedPassword
                 }
@@ -99,39 +97,6 @@ exports.registerLocal = function (req, res) {
         }
     })
 };
-
-exports.me = function (req, res) {
-    var token = req.headers['x-access-token'];
-    if (!token)
-        return res.status(401).send({
-            auth: false,
-            message: 'No token provided.'
-        });
-
-    jwt.verify(token, config.secret, function (err, decoded) {
-        if (err)
-            return res.status(500).send({
-                auth: false,
-                message: 'Failed to authenticate token.'
-            });
-
-        //res.status(200).send(decoded);
-        User.findById(decoded.id, { local: 0 },
-            function (err, user) {
-                if (err)
-                    return res.status(500).send({
-                        message: "There was a problem finding the user."
-                    });
-
-                if (!user)
-                    return res.status(404).send({
-                        message: "No user found."
-                    });
-
-                res.status(200).send(user);
-            });
-    });
-}
 
 exports.login = function (req, res) {
 
@@ -158,14 +123,15 @@ exports.login = function (req, res) {
 
         if (user) {
 
-            bcrypt.compare(req.body.password, user.local.password, function (err, user) {
+            bcrypt.compare(req.body.password, user.local.password, function (err, resPwd) {
                 if (err) {
-                    return res.status(400).send({
+                    return res.status(500).send({
                         code: "LOGIN00031",
-                        message: "User or password is not correct."
+                        message: "Error authenticating user."
                     });
                 }
-                if (user) {
+
+                if (resPwd) {
                     var token = jwt.sign({ id: user._id }, config.secret, {
                         expiresIn: 86400 // expires in 24 hours
                     });
@@ -175,7 +141,40 @@ exports.login = function (req, res) {
                         token: token
                     });
                 }
+
+                return res.status(400).send({
+                    code: "LOGIN00031",
+                    message: "User or password is not correct."
+                });
+
             });
         }
     });
-}
+};
+
+exports.me = function (req, res) {
+
+    var getUserInfo = function (decoded) {
+
+        return User.findById(decoded.id, { local: 0 }, function (err, user) {
+            if (err) {
+                return res.status(500).send({
+                    auth: false,
+                    message: 'There was a problem finding the user.'
+                });
+            }
+
+            if (!user) {
+                return res.status(404).send({
+                    auth: false,
+                    message: 'User not found.'
+                });
+            }
+
+            return res.status(200).send(user);
+        });
+    }
+
+    return jwtServices.validateJwt(req, res, getUserInfo);
+
+};

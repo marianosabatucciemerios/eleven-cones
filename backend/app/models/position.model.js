@@ -3,8 +3,11 @@ var Schema = mongoose.Schema;
 
 var PositionSchema = new Schema({
     code: String,
-    name: String,
-    shortName: String,
+    oder: Number,
+    lang: {
+        en: String,
+        es: String
+    },
     isActive: Boolean
 }, {
     timestamps: true

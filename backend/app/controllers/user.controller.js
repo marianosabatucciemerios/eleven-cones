@@ -1,22 +1,37 @@
-// var User = require('../models/user.model.js');
+var User = require('../models/user.model.js');
+var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+var Q = require("q");
+var config = require('../../config/passport.config.js');
+var jwtServices = require('../services/jwt.services.js');
+var userServices = require('../services/user.services.js');
 
-// exports.create = function (req, res) {
+exports.create = function (req, res) {
 
+    Q.all([
+        userServices.validateName(req.body.firstName, req.body.lastName),
+        userServices.validateEmail(req.body.email),
+        userServices.validatePassword(req.body.password)
+    ])
+        .then(function() {
+            userServices.createUser(req.body.firstName, req.body.lastName, req.body.email, req.body.password)
+            .then(function (data) {
+                return res.status(201).send(data);
+            })            
+            .catch(function (err) {
+                return res.status(400).send(err)
+            });
+        })
+        .catch(function (err) {
+            return res.status(400).send(err)
+        });
 
-//     var user = new User({
-//         firstName: req.body.firstName,
-//         lastName: req.body.lastName
-//     });
+};
 
-//     user.save(function (err, data) {
-//         if (err) {
-//             console.log(err);
-//             res.status(500).send({ message: "Some error occurred while creating the user." });
-//         } else {
-//             res.send(data);
-//         }
-//     });
-// };
+exports.update = function (req, res) {
+
+};
+
 
 // exports.getAll = function (req, res) {
 //     // Retrieve and return all users from the database.
