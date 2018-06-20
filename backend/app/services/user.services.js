@@ -1,8 +1,11 @@
 // var jwt = require('jsonwebtoken');
 // var config = require('../../config/passport.config.js');
 var User = require('../models/user.model.js');
+var Position = require('../models/position.model.js');
 var userServices = require('../services/util.services.js');
 var bcrypt = require('bcryptjs');
+var moment = require('moment');
+var _ = require('lodash');
 
 var patterns = userServices.getPatterns();
 
@@ -105,8 +108,116 @@ exports.validatePassword = function (password) {
 };
 
 exports.encryptPassword = function (password) {
-    
+
     return bcrypt.hashSync(password, 10);
+
+};
+
+exports.validateBirthdate = function (birthdate) {
+
+    return new Promise(function (resolve, reject) {
+        if (!moment(birthdate).isValid())
+            return reject({
+                code: "USER00030",
+                message: "Birthdate is not valid."
+            });
+
+        return resolve();
+    });
+
+};
+
+exports.validateHeight = function (unit, value) {
+
+    return new Promise(function (resolve, reject) {
+        if (unit !== 'CM' && unit !== 'IN')
+            return reject({
+                code: "USER00040",
+                message: "Height unit is not valid."
+            });
+
+        if (!_.isNumber(value))
+            return reject({
+                code: "USER00041",
+                message: "Height value is not valid."
+            });
+
+        return resolve();
+    });
+
+};
+
+exports.validateWeight = function (unit, value) {
+
+    return new Promise(function (resolve, reject) {
+        if (unit !== 'KG' && unit !== 'LB')
+            return reject({
+                code: "USER00040",
+                message: "Weight unit is not valid."
+            });
+
+        if (!_.isNumber(value))
+            return reject({
+                code: "USER00041",
+                message: "Weight value is not valid."
+            });
+
+        return resolve();
+    });
+
+};
+
+exports.validateNumber = function (shirtNumber) {
+
+    return new Promise(function (resolve, reject) {
+        if (!_.isNumber(shirtNumber))
+            return reject({
+                code: "USER00050",
+                message: "Shirt Number is not valid."
+            });
+
+        return resolve();
+    });
+
+};
+
+exports.validatePosition = function (position) {
+
+    return new Promise(function (resolve, reject) {
+        return Position.findByCode(position)
+            .then(function (data) {
+                return resolve(data);
+            })
+            .catch(function (err) {
+                return reject({
+                    code: "USER00060",
+                    message: "Position is not valid." + err
+                });
+            });
+    });
+
+};
+
+exports.validateFoot = function (foot) {
+
+    return new Promise(function (resolve, reject) {
+        if (foot !== 'R' && foot !== 'L' && foot !== 'B')
+            return reject({
+                code: "USER00070",
+                message: "Strong Foot is not valid."
+            });
+
+        return resolve();
+    });
+
+};
+
+exports.validatePhoto = function (photo) {
+
+    return new Promise(function (resolve, reject) {
+
+
+    });
 
 };
 
@@ -156,6 +267,23 @@ exports.updateUser = function (firstName, lastName, email, height, weight, numbe
                     message: "Some error occurred while creating the user."
                 });
             })
+    });
+
+};
+
+exports.getUser = function (id) {
+
+    return new Promise(function (resolve, reject) {
+        return User.findById(id, '-local')
+            .then(function (data) {
+                return resolve(data);
+            })
+            .catch(function (err) {
+                return reject({
+                    code: "USER00100",
+                    message: "User not found is not valid." + err
+                });
+            });
     });
 
 };

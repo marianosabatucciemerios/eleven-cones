@@ -10,7 +10,11 @@ var PositionSchema = new Schema({
     },
     isActive: Boolean
 }, {
-    timestamps: true
-});
+        timestamps: true
+    });
+
+PositionSchema.statics.findByCode = function (code) {
+    return this.findOne({ 'code': code });
+};
 
 module.exports = mongoose.model('Position', PositionSchema);

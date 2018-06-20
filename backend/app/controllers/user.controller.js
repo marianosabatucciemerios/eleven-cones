@@ -13,14 +13,14 @@ exports.create = function (req, res) {
         userServices.validateEmail(req.body.email),
         userServices.validatePassword(req.body.password)
     ])
-        .then(function() {
+        .then(function () {
             userServices.createUser(req.body.firstName, req.body.lastName, req.body.email, req.body.password)
-            .then(function (data) {
-                return res.status(201).send(data);
-            })            
-            .catch(function (err) {
-                return res.status(400).send(err)
-            });
+                .then(function (data) {
+                    return res.status(201).send(data);
+                })
+                .catch(function (err) {
+                    return res.status(400).send(err)
+                });
         })
         .catch(function (err) {
             return res.status(400).send(err)
@@ -29,6 +29,44 @@ exports.create = function (req, res) {
 };
 
 exports.update = function (req, res) {
+
+    userServices.getUser(req.params.userId)
+        .then(function (currentUser) {
+
+            var validations = [];
+
+            if (currentUser.firstName != req.firstName || currentUser.lastName != req.lastName)
+                validations.push('userServices.validateName');
+
+            if (currentUser.email != req.email)
+                validations.push('userServices.validateEmail');
+
+            if (currentUser.height.value != req.heightValue)
+                validations.push('userServices.validateHeight');
+
+            if (currentUser.weight.value != req.weightValue)
+                validations.push('userServices.validateWeight');
+
+
+            // Falta hacer las validaciones previas al update
+            // para saber si el campo fue modificado o no
+            // Una vez sabido eso se puede hacer el update a la BD
+
+
+            // Q.all([
+
+            // ])
+            //     .then(function() {
+
+            //     })
+            //     .catch(function() {
+
+            //     });
+
+        })
+        .catch(function (err) {
+            return res.status(400).send(err)
+        });
 
 };
 

@@ -24,7 +24,13 @@ var UserSchema = new Schema({
         value: Number
     },
     weight: {
-        unit: String,
+        unit: {
+            code: String,
+            lang: {
+                en: String,
+                es: String
+            },
+        },
         value: Number
     },
     email: { type: String, unique: true, lowercase: true },
