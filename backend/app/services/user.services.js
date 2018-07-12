@@ -2,14 +2,14 @@
 // var config = require('../../config/passport.config.js');
 var User = require('../models/user.model.js');
 var Position = require('../models/position.model.js');
-var userServices = require('../services/util.services.js');
+var utilServices = require('../services/util.services.js');
 var bcrypt = require('bcryptjs');
 var moment = require('moment');
 var _ = require('lodash');
 
-var patterns = userServices.getPatterns();
+var patterns = utilServices.getPatterns();
 
-exports.validateName = function (firstName, lastName) {
+exports.validateFirstName = function (firstName) {
 
     return new Promise(function (resolve, reject) {
         if (!firstName) {
@@ -26,6 +26,15 @@ exports.validateName = function (firstName, lastName) {
             });
         }
 
+        return resolve();
+
+    });
+
+};
+
+exports.validateLastName = function (lastName) {
+
+    return new Promise(function (resolve, reject) {
         if (!lastName) {
             return reject({
                 code: "USER00012",
@@ -136,7 +145,7 @@ exports.validateHeight = function (unit, value) {
                 message: "Height unit is not valid."
             });
 
-        if (!_.isNumber(value))
+        if (!_.isNumber(_.toNumber(value)))
             return reject({
                 code: "USER00041",
                 message: "Height value is not valid."
@@ -156,7 +165,7 @@ exports.validateWeight = function (unit, value) {
                 message: "Weight unit is not valid."
             });
 
-        if (!_.isNumber(value))
+        if (!_.isNumber(_.toNumber(value)))
             return reject({
                 code: "USER00041",
                 message: "Weight value is not valid."
@@ -167,7 +176,7 @@ exports.validateWeight = function (unit, value) {
 
 };
 
-exports.validateNumber = function (shirtNumber) {
+exports.validateShirtNumber = function (shirtNumber) {
 
     return new Promise(function (resolve, reject) {
         if (!_.isNumber(shirtNumber))
@@ -221,6 +230,7 @@ exports.validatePhoto = function (photo) {
 
 };
 
+////
 exports.createUser = function (firstName, lastName, email, password) {
 
     return new Promise(function (resolve, reject) {
@@ -246,25 +256,17 @@ exports.createUser = function (firstName, lastName, email, password) {
 
 };
 
-exports.updateUser = function (firstName, lastName, email, height, weight, number, position, foot, photo) {
+exports.updateUser = function (curentUserId, updateValues) {
 
     return new Promise(function (resolve, reject) {
-        User.create({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            local: {
-                password: exports.encryptPassword(password)
-            }
-        })
-            .then(function (data) {
-                data.local = null;
-                resolve(data);
+        User.findByIdAndUpdate(curentUserId, updateValues)
+            .then(function () {
+                resolve();
             })
             .catch(function (err) {
                 reject({
                     code: "USER00030",
-                    message: "Some error occurred while creating the user."
+                    message: "Some error occurred while updateing user." + err
                 });
             })
     });

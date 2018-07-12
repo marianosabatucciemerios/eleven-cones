@@ -1,15 +1,17 @@
-var User = require('../models/user.model.js');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+// var User = require('../models/user.model.js');
+// var bcrypt = require('bcryptjs');
+// var jwt = require('jsonwebtoken');
 var Q = require("q");
-var config = require('../../config/passport.config.js');
-var jwtServices = require('../services/jwt.services.js');
+// var config = require('../../config/passport.config.js');
+// var jwtServices = require('../services/jwt.services.js');
 var userServices = require('../services/user.services.js');
+// var _ = require('lodash');
 
 exports.create = function (req, res) {
 
     Q.all([
-        userServices.validateName(req.body.firstName, req.body.lastName),
+        userServices.validateFirstName(req.body.firstName),
+        userServices.validateLastName(req.body.lastName),
         userServices.validateEmail(req.body.email),
         userServices.validatePassword(req.body.password)
     ])
@@ -34,38 +36,71 @@ exports.update = function (req, res) {
         .then(function (currentUser) {
 
             var validations = [];
+            var updateValues = {};
 
-            if (currentUser.firstName != req.firstName || currentUser.lastName != req.lastName)
-                validations.push('userServices.validateName');
+            // Mandatory fields
+            if (currentUser.firstName != req.body.firstName) {
+                validations.push(userServices.validateFirstName(req.body.firstName));
+                updateValues.firstName = req.body.firstName;
+            }
 
-            if (currentUser.email != req.email)
-                validations.push('userServices.validateEmail');
+            if (currentUser.lastName != req.body.lastName) {
+                validations.push(userServices.validateLastName(req.body.lastName));
+                updateValues.lastName = req.body.lastName;
+            }
 
-            if (currentUser.height.value != req.heightValue)
-                validations.push('userServices.validateHeight');
+            if (currentUser.email != req.body.email) {
+                validations.push(userServices.validateEmail(req.body.email));
+                updateValues.email = req.body.email;
+            }
 
-            if (currentUser.weight.value != req.weightValue)
-                validations.push('userServices.validateWeight');
+            // Optional fields
+            if (req.body.birthdate) {
+                if (currentUser.birthdate != req.body.birthdate) {
+                    validations.push(userServices.validateBirthdate(req.body.birthdate));
+                    updateValues.birthdate = req.body.birthdate;
+                }
+            }
 
+            if (req.body.heightUnit && req.body.heightValue) {
+                if (currentUser.height.value != req.body.heightValue) {
+                    validations.push(userServices.validateHeight(req.body.heightUnit, req.body.heightValue));
+                    updateValues.height = {
+                        unit: { code: req.body.heightUnit },
+                        value: req.body.heightValue
+                    };
+                }
+            }
 
-            // Falta hacer las validaciones previas al update
-            // para saber si el campo fue modificado o no
-            // Una vez sabido eso se puede hacer el update a la BD
+            if (req.body.weightUnit && req.body.weightValue) {
+                if (currentUser.weight.value != req.body.weightValue) {
+                    validations.push(userServices.validateWeight(req.body.weightUnit, req.body.weightValue));
+                    updateValues.weight = {
+                        unit: { code: req.body.weightUnit },
+                        value: req.body.weightValue
+                    };
+                }
+            }
 
-
-            // Q.all([
-
-            // ])
-            //     .then(function() {
-
-            //     })
-            //     .catch(function() {
-
-            //     });
+            if (updateValues) {
+                Q.all(validations)
+                    .then(function () {
+                        userServices.updateUser(req.params.userId, updateValues)
+                            .then(function () {
+                                return res.status(200).send()
+                            })
+                            .catch(function (err) {
+                                return res.status(400).send(err)
+                            })
+                    })
+                    .catch(function (err) {
+                        return res.status(400).send(err)
+                    });
+            }
 
         })
         .catch(function (err) {
-            return res.status(400).send(err)
+            return res.status(500).send(err)
         });
 
 };
@@ -84,22 +119,13 @@ exports.update = function (req, res) {
 // };
 
 // exports.getById = function (req, res) {
-//     // Find a single user with a userID
-//     User.findById(req.params.userID, function (err, user) {
-//         if (err) {
-//             console.log(err);
-//             if (err.kind === 'ObjectId') {
-//                 return res.status(404).send({ message: "User not found with id " + req.params.userId });
-//             }
-//             return res.status(500).send({ message: "Error retrieving user with id " + req.params.userId });
-//         }
-
-//         if (!user) {
-//             return res.status(404).send({ message: "User not found with id " + req.params.userId });
-//         }
-
-//         res.send(user);
-//     });
+//     userServices.getUser(req.params.userId)
+//         .then(function (data) {
+//             return res.status(200).send(data)
+//         })
+//         .catch(function (err) {
+//             return res.status(500).send(err)
+//         });
 // };
 
 // exports.getByEmail = function (email, err) {

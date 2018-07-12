@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var TeamSchema = new Schema({
-    code: String,
     name: String,
+    code: { type: String, unique: true },
     description: String,
     yearBuilt: Date,
     colors: {

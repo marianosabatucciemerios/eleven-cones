@@ -1,103 +1,100 @@
-var Team = require('../models/team.model.js');
+//var Team = require('../models/team.model.js');
+var Q = require("q");
+var teamServices = require('../services/team.services.js');
 
 exports.create = function (req, res) {
-    // Create and Save a new Team
-    if (!req.body.name && !req.body.code) {
-        return res.status(400).send({ 
-            message: "Team can not be empty",
-            content: req.body
+
+    Q.all([
+        teamServices.validateName(req.body.name),
+        teamServices.validateCode(req.body.code),
+        teamServices.validateDescription(req.body.description),
+        teamServices.validateYearBuilt(req.body.yearBuilt),
+        teamServices.validateColor(req.body.colorPrimary),
+        teamServices.validateColor(req.body.colorSecondary)
+    ])
+        .then(function () {
+            teamServices.createTeam(req.body.name, req.body.code, req.body.description, req.body.yearBuilt, req.body.colorPrimary, req.body.colorSecondary)
+                .then(function (data) {
+                    return res.status(201).send(data);
+                })
+                .catch(function (err) {
+                    return res.status(400).send(err)
+                });
+        })
+        .catch(function (err) {
+            return res.status(400).send(err)
         });
-    }
 
-    var team = new Team({
-        name: req.body.name,
-        code: req.body.code
-    });
-
-    team.save(function (err, data) {
-        if (err) {
-            console.log(err);
-            res.status(500).send({ message: "Some error occurred while creating the team." });
-        } else {
-            res.send(data);
-        }
-    });
-};
-
-exports.findAll = function (req, res) {
-    // Retrieve and return all teams from the database.
-    Team.find(function (err, teams) {
-        if (err) {
-            console.log(err);
-            res.status(500).send({ message: "Some error occurred while retrieving teams." });
-        } else {
-            res.send(teams);
-        }
-    });
-};
-
-exports.findById = function (req, res) {
-    // Find a single team with a teamId
-    Team.findById(req.params.teamId, function (err, team) {
-        if (err) {
-            console.log(err);
-            if (err.kind === 'ObjectId') {
-                return res.status(404).send({ message: "Team not found with id " + req.params.teamId });
-            }
-            return res.status(500).send({ message: "Error retrieving team with id " + req.params.teamId });
-        }
-
-        if (!team) {
-            return res.status(404).send({ message: "Team not found with id " + req.params.teamId });
-        }
-
-        res.send(team);
-    });
 };
 
 exports.update = function (req, res) {
-    // Update a team identified by the teamId in the request
-    Team.findById(req.params.teamId, function (err, team) {
-        if (err) {
-            console.log(err);
-            if (err.kind === 'ObjectId') {
-                return res.status(404).send({ message: "Team not found with id " + req.params.teamId });
+
+    teamServices.getTeam(req.params.teamId)
+        .then(function (currentTeam) {
+
+            var validations = [];
+            var updateValues = {};
+
+            // Mandatory fields
+            if (currentTeam.name != req.body.name) {
+                validations.push(teamServices.validateName(req.body.name));
+                updateValues.name = req.body.name;
             }
-            return res.status(500).send({ message: "Error finding team with id " + req.params.teamId });
-        }
 
-        if (!team) {
-            return res.status(404).send({ message: "Team not found with id " + req.params.teamId });
-        }
-
-        team.name = req.body.name;
-        team.code = req.body.code;
-
-        team.save(function (err, data) {
-            if (err) {
-                res.status(500).send({ message: "Could not update team with id " + req.params.teamId });
-            } else {
-                res.send(data);
+            if (currentTeam.code != req.body.code) {
+                validations.push(teamServices.validateName(req.body.code));
+                updateValues.code = req.body.code;
             }
+
+            // Optional fields
+            if (req.body.description) {
+                if (currentTeam.description != req.body.description) {
+                    validations.push(teamServices.validateDescription(req.body.description));
+                    updateValues.description = req.body.description;
+                }
+            }
+
+            if (req.body.yearBuilt) {
+                if (currentTeam.description != req.body.yearBuilt) {
+                    validations.push(teamServices.validateYearBuilt(req.body.yearBuilt));
+                    updateValues.yearBuilt = req.body.yearBuilt;
+                }
+            }
+
+            if (req.body.colorPrimary) {
+                if (currentTeam.description != req.body.colorPrimary) {
+                    validations.push(teamServices.validateColor(req.body.colorPrimary));
+                    updateValues.colorPrimary = req.body.colorPrimary;
+                }
+            }
+
+            if (req.body.colorSecondary) {
+                if (currentTeam.description != req.body.colorSecondary) {
+                    validations.push(teamServices.validateColor(req.body.colorSecondary));
+                    updateValues.colorSecondary = req.body.colorSecondary;
+                }
+            }
+
+
+            if (updateValues) {
+                Q.all(validations)
+                    .then(function () {
+                        teamServices.updateTeam(req.params.teamId, updateValues)
+                            .then(function () {
+                                return res.status(200).send()
+                            })
+                            .catch(function (err) {
+                                return res.status(400).send(err)
+                            })
+                    })
+                    .catch(function (err) {
+                        return res.status(400).send(err)
+                    });
+            }
+
+        })
+        .catch(function (err) {
+            return res.status(500).send(err)
         });
-    });
-};
 
-exports.delete = function (req, res) {
-    // Delete a team with the specified teamId in the request
-    Team.findByIdAndRemove(req.params.teamId, function (err, team) {
-        if (err) {
-            console.log(err);
-            if (err.kind === 'ObjectId') {
-                return res.status(404).send({ message: "Team not found with id " + req.params.teamId });
-            }
-            return res.status(500).send({ message: "Could not delete team with id " + req.params.teamId });
-        }
-
-        if (!team) {
-            return res.status(404).send({ message: "Team not found with id " + req.params.teamId });
-        }
-
-        res.send({ message: "Team deleted successfully!" })
-    });
 };

@@ -5,7 +5,7 @@ var UserSchema = new Schema({
     firstName: String,
     lastName: String,
     picture: { data: Buffer, contentType: String },
-    birthday: Date,
+    birthdate: Date,
     strongFoot: {
         code: String,
         lang: {
