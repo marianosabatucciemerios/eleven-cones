@@ -39,20 +39,20 @@ exports.update = function (req, res) {
             var updateValues = {};
 
             // Mandatory fields
-            if (currentUser.firstName != req.body.firstName) {
-                validations.push(userServices.validateFirstName(req.body.firstName));
-                updateValues.firstName = req.body.firstName;
-            }
+            // if (currentUser.firstName != req.body.firstName) {
+            //     validations.push(userServices.validateFirstName(req.body.firstName));
+            //     updateValues.firstName = req.body.firstName;
+            // }
 
-            if (currentUser.lastName != req.body.lastName) {
-                validations.push(userServices.validateLastName(req.body.lastName));
-                updateValues.lastName = req.body.lastName;
-            }
+            // if (currentUser.lastName != req.body.lastName) {
+            //     validations.push(userServices.validateLastName(req.body.lastName));
+            //     updateValues.lastName = req.body.lastName;
+            // }
 
-            if (currentUser.email != req.body.email) {
-                validations.push(userServices.validateEmail(req.body.email));
-                updateValues.email = req.body.email;
-            }
+            // if (currentUser.email != req.body.email) {
+            //     validations.push(userServices.validateEmail(req.body.email));
+            //     updateValues.email = req.body.email;
+            // }
 
             // Optional fields
             if (req.body.birthdate) {
@@ -118,15 +118,15 @@ exports.update = function (req, res) {
 //     });
 // };
 
-// exports.getById = function (req, res) {
-//     userServices.getUser(req.params.userId)
-//         .then(function (data) {
-//             return res.status(200).send(data)
-//         })
-//         .catch(function (err) {
-//             return res.status(500).send(err)
-//         });
-// };
+exports.getById = function (req, res) {
+    userServices.getUser(req.params.userId)
+        .then(function (data) {
+            return res.status(200).send(data)
+        })
+        .catch(function (err) {
+            return res.status(500).send(err)
+        });
+};
 
 // exports.getByEmail = function (email, err) {
 //     return User.findOne({ 'email': email }, function (err, user) {
