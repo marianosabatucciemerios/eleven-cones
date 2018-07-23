@@ -39,20 +39,20 @@ exports.update = function (req, res) {
             var updateValues = {};
 
             // Mandatory fields
-            // if (currentUser.firstName != req.body.firstName) {
-            //     validations.push(userServices.validateFirstName(req.body.firstName));
-            //     updateValues.firstName = req.body.firstName;
-            // }
+            if (currentUser.firstName != req.body.firstName) {
+                validations.push(userServices.validateFirstName(req.body.firstName));
+                updateValues.firstName = req.body.firstName;
+            }
 
-            // if (currentUser.lastName != req.body.lastName) {
-            //     validations.push(userServices.validateLastName(req.body.lastName));
-            //     updateValues.lastName = req.body.lastName;
-            // }
+            if (currentUser.lastName != req.body.lastName) {
+                validations.push(userServices.validateLastName(req.body.lastName));
+                updateValues.lastName = req.body.lastName;
+            }
 
-            // if (currentUser.email != req.body.email) {
-            //     validations.push(userServices.validateEmail(req.body.email));
-            //     updateValues.email = req.body.email;
-            // }
+            if (currentUser.email != req.body.email) {
+                validations.push(userServices.validateEmail(req.body.email));
+                updateValues.email = req.body.email;
+            }
 
             // Optional fields
             if (req.body.birthdate) {
