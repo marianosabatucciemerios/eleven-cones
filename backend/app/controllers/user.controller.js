@@ -39,17 +39,17 @@ exports.update = function (req, res) {
             var updateValues = {};
 
             // Mandatory fields
-            if (req.body.firstName != null && currentUser.firstName != req.body.firstName) {
+            if (req.body.firstName && currentUser.firstName != req.body.firstName) {
                 validations.push(userServices.validateFirstName(req.body.firstName));
                 updateValues.firstName = req.body.firstName;
             }
 
-            if (req.body.lastName != null && currentUser.lastName != req.body.lastName) {
+            if (req.body.lastName && currentUser.lastName != req.body.lastName) {
                 validations.push(userServices.validateLastName(req.body.lastName));
                 updateValues.lastName = req.body.lastName;
             }
 
-            if (req.body.email != null && currentUser.email != req.body.email) {
+            if (req.body.email && currentUser.email != req.body.email) {
                 validations.push(userServices.validateEmail(req.body.email));
                 updateValues.email = req.body.email;
             }
