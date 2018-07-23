@@ -118,15 +118,15 @@ exports.update = function (req, res) {
 //     });
 // };
 
-exports.getById = function (req, res) {
-    userServices.getUser(req.params.userId)
-        .then(function (data) {
-            return res.status(200).send(data)
-        })
-        .catch(function (err) {
-            return res.status(500).send(err)
-        });
-};
+// exports.getById = function (req, res) {
+//     userServices.getUser(req.params.userId)
+//         .then(function (data) {
+//             return res.status(200).send(data)
+//         })
+//         .catch(function (err) {
+//             return res.status(500).send(err)
+//         });
+// };
 
 // exports.getByEmail = function (email, err) {
 //     return User.findOne({ 'email': email }, function (err, user) {

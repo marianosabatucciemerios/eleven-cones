@@ -2,6 +2,7 @@ var User = require('../models/user.model.js');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 var config = require('../../config/passport.config.js');
+var jwtServices = require('../services/jwt.services.js');
 
 exports.singupLocal = function (req, res) {
 
