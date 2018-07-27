@@ -8,7 +8,7 @@ module.exports = function(app) {
     
     // app.get('/v1/users', users.getAll);
 
-    // app.get('/v1/users/:userId', users.getById);
+    //app.get('/v1/users/:userId', users.getById);
 
     // app.delete('/v1/users/:userId', users.delete);
 }
