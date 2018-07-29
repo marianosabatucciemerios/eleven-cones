@@ -3,9 +3,12 @@ import { UserSchema } from '../models/userModel';
 import { Request, Response } from 'express';
 import { UtilServices } from './utilServices';
 import * as moment from 'moment';
+import * as _ from 'lodash';
+import { PositionSchema } from 'models/positionModel';
 
 
 const User = mongoose.model('User', UserSchema);
+const Position = mongoose.model('Position', PositionSchema);
 
 export class UserServices {
     private patterns: any = this.utilService.patterns();
@@ -125,6 +128,141 @@ export class UserServices {
                 });
     
             return resolve();
+        });
+    }
+
+    public validateHeight(unit, value) {
+        return new Promise(function (resolve, reject) {
+            if (unit !== 'CM' && unit !== 'IN')
+                return reject({
+                    code: "USER00040",
+                    message: "Height unit is not valid."
+                });
+    
+            if (!_.isNumber(_.toNumber(value)))
+                return reject({
+                    code: "USER00041",
+                    message: "Height value is not valid."
+                });
+    
+            return resolve();
+        });
+    }
+
+    public validateWeight(unit, value) {
+        return new Promise(function (resolve, reject) {
+            if (unit !== 'KG' && unit !== 'LB')
+                return reject({
+                    code: "USER00040",
+                    message: "Weight unit is not valid."
+                });
+    
+            if (!_.isNumber(_.toNumber(value)))
+                return reject({
+                    code: "USER00041",
+                    message: "Weight value is not valid."
+                });
+    
+            return resolve();
+        });
+    }
+
+    public validateShirtNumber(shirtNumber) {
+        return new Promise(function (resolve, reject) {
+            if (!_.isNumber(shirtNumber))
+                return reject({
+                    code: "USER00050",
+                    message: "Shirt Number is not valid."
+                });
+    
+            return resolve();
+        });
+    }
+
+    public validatePosition(position) {
+        return new Promise(function (resolve, reject) {
+            return Position.findByCode(position)
+                .then(function (data) {
+                    return resolve(data);
+                })
+                .catch(function (err) {
+                    return reject({
+                        code: "USER00060",
+                        message: "Position is not valid." + err
+                    });
+                });
+        });
+    }
+
+    public validateFoot(foot) {
+        return new Promise(function (resolve, reject) {
+            if (foot !== 'R' && foot !== 'L' && foot !== 'B')
+                return reject({
+                    code: "USER00070",
+                    message: "Strong Foot is not valid."
+                });
+    
+            return resolve();
+        });
+    }
+
+    public validatePhoto(photo) {
+        return new Promise(function (resolve, reject) {
+
+
+        });
+    }
+
+    public createUser(firstName, lastName, email, password) {
+        return new Promise(function (resolve, reject) {
+            User.create({
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                local: {
+                    password: exports.encryptPassword(password)
+                }
+            })
+                .then(function (data) {
+                    data.local = null;
+                    resolve(data);
+                })
+                .catch(function (err) {
+                    reject({
+                        code: "USER00030",
+                        message: "Some error occurred while creating the user."
+                    });
+                });
+        });
+    }
+
+    public updateUser(curentUserId, updateValues) {
+        return new Promise(function (resolve, reject) {
+            User.findByIdAndUpdate(curentUserId, updateValues)
+                .then(function () {
+                    resolve();
+                })
+                .catch(function (err) {
+                    reject({
+                        code: "USER00030",
+                        message: "Some error occurred while updateing user." + err
+                    });
+                })
+        });
+    }
+
+    public getUser(id) {
+        return new Promise(function (resolve, reject) {
+            return User.findById(id, '-local')
+                .then(function (data) {
+                    return resolve(data);
+                })
+                .catch(function (err) {
+                    return reject({
+                        code: "USER00100",
+                        message: "User not found is not valid." + err
+                    });
+                });
         });
     }
 };
