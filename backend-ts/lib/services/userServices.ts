@@ -2,6 +2,8 @@ import * as mongoose from 'mongoose';
 import { UserSchema } from '../models/userModel';
 import { Request, Response } from 'express';
 import { UtilServices } from './utilServices';
+import * as moment from 'moment';
+
 
 const User = mongoose.model('User', UserSchema);
 
@@ -91,7 +93,38 @@ export class UserServices {
     }
 
     public validatePassword(password) {
+        return new Promise(function (resolve, reject) {
+            if (!password) {
+                return reject({
+                    code: "USER00024",
+                    message: "Password cannot be empty"
+                });
+            }
+    
+            if (password.length < 8) {
+                return reject({
+                    code: "USER00025",
+                    message: "Password should be 8 characters or longer"
+                });
+            }
+    
+            return resolve();
+        });
+    }
+
+    public encryptPassword(password) {
 
     }
 
+    public validateBirthdate(birthdate) {
+        return new Promise(function (resolve, reject) {
+            if (!moment(birthdate).isValid())
+                return reject({
+                    code: "USER00030",
+                    message: "Birthdate is not valid."
+                });
+    
+            return resolve();
+        });
+    }
 };
