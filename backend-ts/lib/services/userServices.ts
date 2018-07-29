@@ -75,14 +75,14 @@ export class UserServices {
             }
     
             return User.findByEmail(email)
-                .catch(function (err) {
+                .catch((err) => {
                     return reject({
                         code: "USER00022",
                         message: "There was a problem retrieving the user." + err
                     });
                 })
                 //hay que ver como es el .then para typescript
-                .then(function (data) {
+                .then((data) => {
                     if (data) {
                         return reject({
                             code: "USER00023",
@@ -182,10 +182,10 @@ export class UserServices {
     public validatePosition(position) {
         return new Promise(function (resolve, reject) {
             return Position.findByCode(position)
-                .then(function (data) {
+                .then((data) => {
                     return resolve(data);
                 })
-                .catch(function (err) {
+                .catch((err) => {
                     return reject({
                         code: "USER00060",
                         message: "Position is not valid." + err
@@ -223,11 +223,11 @@ export class UserServices {
                     password: exports.encryptPassword(password)
                 }
             })
-                .then(function (data) {
+                .then((data) => {
                     data.local = null;
                     resolve(data);
                 })
-                .catch(function (err) {
+                .catch((err) => {
                     reject({
                         code: "USER00030",
                         message: "Some error occurred while creating the user."
@@ -239,10 +239,10 @@ export class UserServices {
     public updateUser(curentUserId, updateValues) {
         return new Promise(function (resolve, reject) {
             User.findByIdAndUpdate(curentUserId, updateValues)
-                .then(function () {
+                .then(() => {
                     resolve();
                 })
-                .catch(function (err) {
+                .catch((err) => {
                     reject({
                         code: "USER00030",
                         message: "Some error occurred while updateing user." + err
@@ -254,10 +254,10 @@ export class UserServices {
     public getUser(id) {
         return new Promise(function (resolve, reject) {
             return User.findById(id, '-local')
-                .then(function (data) {
+                .then((data) => {
                     return resolve(data);
                 })
-                .catch(function (err) {
+                .catch((err) => {
                     return reject({
                         code: "USER00100",
                         message: "User not found is not valid." + err
