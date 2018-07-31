@@ -1,5 +1,5 @@
-import { UserSchema } from "models/userModel";
-import { PositionSchema } from "models/positionModel";
+import { UserSchema } from "../models/userModel";
+import { PositionSchema } from "../models/positionModel";
 import { UtilServices } from "../service/utilServices";
 //Falta importar bcryptjs
 import * as moment from 'moment';
@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 
 export class UserServices {
 
-    constructor(private utils: UtilServices) { }
+    public utils: UtilServices = new UtilServices();
 
     public validateFirstName(firstName) {
         let patterns = this.utils.getPatternKey('ALPHA_SUPER');
