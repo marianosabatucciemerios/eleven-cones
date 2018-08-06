@@ -16,7 +16,7 @@ class App {
         this.config();
         this.mongoSetup();
         this.routePrv.routes(this.app);
-        this.userRoute.routes(this.app);
+        this.userRoute.userRoutes(this.app);
     }
 
     private config(): void {

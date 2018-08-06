@@ -12,8 +12,8 @@ export class UserController {
 
     constructor(
     ) {}
-
-    public create(req, res) {
+    
+    public create(req, res): any {
         // Promise.all([
         //     this.userService.validateFirstName(req.body.firstName),
         //     this.userService.validateLastName(req.body.lastName),

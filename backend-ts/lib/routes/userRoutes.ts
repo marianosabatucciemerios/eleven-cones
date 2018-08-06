@@ -5,7 +5,7 @@ export class UserRoutes {
 
     public userController: UserController = new UserController();
 
-    public routes(app): void {
+    public userRoutes(app): void {
 
         app.route('/usertest')
             .get((req: Request, res: Response) => {
