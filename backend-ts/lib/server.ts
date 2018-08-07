@@ -1,6 +1,7 @@
 import app from "./app";
 import * as https from 'https';
 import * as fs from 'fs';
+//import { UserServices } from "../lib/service/userServices";
 
 const PORT = 3000;
 
@@ -13,6 +14,10 @@ const httpsOptions = {
 https.createServer(httpsOptions, app).listen(PORT, () => {
     console.log('Express secure server listening on port ' + PORT);
 })
+
+//const userServices: UserServices = new UserServices();
+
+//console.log(userServices.test());
 
 // -- HTTP -- //
 // app.listen(PORT, () => {

@@ -1,16 +1,17 @@
 import { UserSchema } from "../models/userModel";
 import { PositionSchema } from "../models/positionModel";
 import { UtilServices } from "../service/utilServices";
-//Falta importar bcryptjs
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import * as mongoose from 'mongoose';
+
+const User = mongoose.model('User', UserSchema);
+const utils: UtilServices = new UtilServices();
 
 export class UserServices {
 
-    public utils: UtilServices = new UtilServices();
-
     public validateFirstName(firstName) {
-        let patterns = this.utils.getPatternKey('ALPHA_SUPER');
+        let patterns = utils.getPatternKey('ALPHA_SUPER');
         return new Promise(function (resolve, reject) {
             if (!firstName) {
                 return reject({
@@ -30,7 +31,7 @@ export class UserServices {
     }
 
     public validateLastName(lastName) {
-        let patterns: any = this.utils.getPatternKey('ALPHA_SUPER');
+        let patterns: any = utils.getPatternKey('ALPHA_SUPER');
 
         return new Promise(function (resolve, reject) {
             if (!lastName) {
@@ -51,7 +52,7 @@ export class UserServices {
     }
 
     public validateEmail(email) {
-        let patterns: any = this.utils.getPatternKey('EMAIL');
+        let patterns: any = utils.getPatternKey('EMAIL');
 
         return new Promise(function (resolve, reject) {
 
@@ -69,7 +70,7 @@ export class UserServices {
                 });
             }
 
-            return UserSchema.findByEmail(email)
+            return User.findByEmail(email)
                 .catch((err) => {
                     return reject({
                         code: "USER00022",
@@ -207,12 +208,12 @@ export class UserServices {
 
     public createUser(firstName, lastName, email, password) {
         return new Promise(function (resolve, reject) {
-            UserSchema.create({
+            User.create({
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
                 local: {
-                    password: exports.encryptPassword(password)
+                    password: password
                 }
             })
                 .then((data) => {
@@ -242,6 +243,7 @@ export class UserServices {
                 })
         });
     }
+
 
     public getUser(id) {
         return new Promise(function (resolve, reject) {

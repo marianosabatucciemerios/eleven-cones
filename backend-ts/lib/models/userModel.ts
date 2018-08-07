@@ -88,3 +88,8 @@ export const UserSchema = new Schema({
 }, {
     timestamps: true
 });
+
+
+// UserSchema.findByEmail = function (email: string, cb){
+//     return this.findOne({ 'email': email }, cb);
+// }

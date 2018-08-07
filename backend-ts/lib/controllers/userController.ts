@@ -5,39 +5,32 @@ import { UserServices } from '../service/userServices';
 
 const User = mongoose.model('User', UserSchema);
 //const userService = mongoose.service('UserService', UserServices);
+const userServices: UserServices = new UserServices();
 
 export class UserController {
-    
-    public userService: UserServices = new UserServices();
 
     constructor(
     ) {}
     
     public create(req, res): any {
-        // Promise.all([
-        //     this.userService.validateFirstName(req.body.firstName),
-        //     this.userService.validateLastName(req.body.lastName),
-        //     this.userService.validateEmail(req.body.email),
-        //     this.userService.validatePassword(req.body.password)
-        // ])
-        //     .then(() => {
-        //         this.userService.createUser(req.body.firstName, req.body.lastName, req.body.email, req.body.password)
-        //             .then((data) => {
-        //                 return res.status(201).send(data)
-        //             })
-        //             .catch((err) => {
-        //                 return res.status(400).send(err)
-        //             });
-        //     })
-        //     .catch((err) => {
-        //         return res.status(400).send(err)
-        //     });
-        this.userService.createUser(req.body.firstName, req.body.lastName, req.body.email, req.body.password)
-            .then((data) => {
-                return res.status(201).send(data)
+        Promise.all([
+            userServices.validateFirstName(req.body.firstName),
+            userServices.validateLastName(req.body.lastName),
+            //Falta solucionar el Find By Email de la validacion
+            //userServices.validateEmail(req.body.email),
+            userServices.validatePassword(req.body.password)
+        ])
+            .then(() => {
+                userServices.createUser(req.body.firstName, req.body.lastName, req.body.email, req.body.password)
+                    .then((data) => {
+                        return res.status(201).send(data)
+                    })
+                    .catch((err) => {
+                        return res.status(400).send(err.message)
+                    });
             })
             .catch((err) => {
-                return res.status(400).send(err)
+                return res.status(400).send(err.message);
             });
     }
 
