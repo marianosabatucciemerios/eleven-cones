@@ -4,6 +4,7 @@ import { UtilServices } from "../service/utilServices";
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcryptjs';
 
 const User = mongoose.model('User', UserSchema);
 const utils: UtilServices = new UtilServices();
@@ -109,7 +110,7 @@ export class UserServices {
     }
 
     public encryptPassword(password) {
-        //Encriptado de password
+        return bcrypt.hashSync(password, 10);
     }
 
     public validateBirthdate(birthdate) {
@@ -207,13 +208,15 @@ export class UserServices {
     }
 
     public createUser(firstName, lastName, email, password) {
+        let encryptPass = this.encryptPassword(password);
+
         return new Promise(function (resolve, reject) {
             User.create({
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
                 local: {
-                    password: password
+                    password: encryptPass
                 }
             })
                 .then((data) => {
