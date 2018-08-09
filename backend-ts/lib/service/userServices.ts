@@ -119,7 +119,7 @@ export class UserServices {
                     code: "USER00030",
                     message: "Birthdate is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -131,13 +131,13 @@ export class UserServices {
                     code: "USER00040",
                     message: "Height unit is not valid."
                 });
-    
+
             if (!_.isNumber(_.toNumber(value)))
                 return reject({
                     code: "USER00041",
                     message: "Height value is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -149,13 +149,13 @@ export class UserServices {
                     code: "USER00040",
                     message: "Weight unit is not valid."
                 });
-    
+
             if (!_.isNumber(_.toNumber(value)))
                 return reject({
                     code: "USER00041",
                     message: "Weight value is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -167,7 +167,7 @@ export class UserServices {
                     code: "USER00050",
                     message: "Shirt Number is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -194,7 +194,7 @@ export class UserServices {
                     code: "USER00070",
                     message: "Strong Foot is not valid."
                 });
-    
+
             return resolve();
         });
     }

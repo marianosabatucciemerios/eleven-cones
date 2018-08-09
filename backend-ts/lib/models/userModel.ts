@@ -90,6 +90,6 @@ export const UserSchema = new Schema({
 });
 
 
-// UserSchema.findByEmail = function (email: string, cb){
-//     return this.findOne({ 'email': email }, cb);
-// }
+UserSchema.statics.findByEmail = function (email: string){
+    return this.findOne({ 'email': email });
+}
