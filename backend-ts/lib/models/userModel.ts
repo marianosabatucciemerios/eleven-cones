@@ -88,3 +88,8 @@ export const UserSchema = new Schema({
 }, {
     timestamps: true
 });
+
+
+UserSchema.statics.findByEmail = function (email: string){
+    return this.findOne({ 'email': email });
+}

@@ -1,16 +1,18 @@
 import { UserSchema } from "../models/userModel";
 import { PositionSchema } from "../models/positionModel";
 import { UtilServices } from "../service/utilServices";
-//Falta importar bcryptjs
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcryptjs';
+
+const User = mongoose.model('User', UserSchema);
+const utils: UtilServices = new UtilServices();
 
 export class UserServices {
 
-    public utils: UtilServices = new UtilServices();
-
     public validateFirstName(firstName) {
-        let patterns = this.utils.getPatternKey('ALPHA_SUPER');
+        let patterns = utils.getPatternKey('ALPHA_SUPER');
         return new Promise(function (resolve, reject) {
             if (!firstName) {
                 return reject({
@@ -30,7 +32,7 @@ export class UserServices {
     }
 
     public validateLastName(lastName) {
-        let patterns: any = this.utils.getPatternKey('ALPHA_SUPER');
+        let patterns: any = utils.getPatternKey('ALPHA_SUPER');
 
         return new Promise(function (resolve, reject) {
             if (!lastName) {
@@ -51,7 +53,7 @@ export class UserServices {
     }
 
     public validateEmail(email) {
-        let patterns: any = this.utils.getPatternKey('EMAIL');
+        let patterns: any = utils.getPatternKey('EMAIL');
 
         return new Promise(function (resolve, reject) {
 
@@ -69,7 +71,7 @@ export class UserServices {
                 });
             }
 
-            return UserSchema.findByEmail(email)
+            return User.findByEmail(email)
                 .catch((err) => {
                     return reject({
                         code: "USER00022",
@@ -108,7 +110,7 @@ export class UserServices {
     }
 
     public encryptPassword(password) {
-        //Encriptado de password
+        return bcrypt.hashSync(password, 10);
     }
 
     public validateBirthdate(birthdate) {
@@ -118,7 +120,7 @@ export class UserServices {
                     code: "USER00030",
                     message: "Birthdate is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -130,13 +132,13 @@ export class UserServices {
                     code: "USER00040",
                     message: "Height unit is not valid."
                 });
-    
+
             if (!_.isNumber(_.toNumber(value)))
                 return reject({
                     code: "USER00041",
                     message: "Height value is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -148,13 +150,13 @@ export class UserServices {
                     code: "USER00040",
                     message: "Weight unit is not valid."
                 });
-    
+
             if (!_.isNumber(_.toNumber(value)))
                 return reject({
                     code: "USER00041",
                     message: "Weight value is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -166,7 +168,7 @@ export class UserServices {
                     code: "USER00050",
                     message: "Shirt Number is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -193,7 +195,7 @@ export class UserServices {
                     code: "USER00070",
                     message: "Strong Foot is not valid."
                 });
-    
+
             return resolve();
         });
     }
@@ -206,13 +208,15 @@ export class UserServices {
     }
 
     public createUser(firstName, lastName, email, password) {
+        let encryptPass = this.encryptPassword(password);
+
         return new Promise(function (resolve, reject) {
-            UserSchema.create({
+            User.create({
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
                 local: {
-                    password: exports.encryptPassword(password)
+                    password: encryptPass
                 }
             })
                 .then((data) => {
@@ -230,9 +234,9 @@ export class UserServices {
 
     public updateUser(curentUserId, updateValues) {
         return new Promise(function (resolve, reject) {
-            UserSchema.findByIdAndUpdate(curentUserId, updateValues)
-                .then(() => {
-                    resolve();
+            User.findByIdAndUpdate(curentUserId, updateValues)
+                .then((data) => {
+                    resolve(data);
                 })
                 .catch((err) => {
                     reject({
@@ -243,9 +247,36 @@ export class UserServices {
         });
     }
 
+    public getAllUsers() {
+        return new Promise(function (resolve, reject) {
+            return User.find({}, '-local')
+                .then((data) => {
+                    return resolve(data);
+                })
+                .catch((err) => {
+                    return reject({
+                        code: "USER00200",
+                        message: "Some error occurred while retrieving users." + err
+                    });
+                });
+        });
+    }
+
+    public deleteUser(id) {
+        let userId = id;
+        return new Promise(function (resolve, reject) {
+            return User.remove({_id: Object(id)}, (err, user) => {
+                    return resolve(userId);
+                })
+                .catch((err) => {
+                    return reject(err);
+                });
+        });
+    }
+
     public getUser(id) {
         return new Promise(function (resolve, reject) {
-            return UserSchema.findById(id, '-local')
+            return User.findById(id, '-local')
                 .then((data) => {
                     return resolve(data);
                 })

@@ -5,7 +5,7 @@ export class UserRoutes {
 
     public userController: UserController = new UserController();
 
-    public routes(app): void {
+    public userRoutes(app): void {
 
         app.route('/usertest')
             .get((req: Request, res: Response) => {
@@ -15,6 +15,12 @@ export class UserRoutes {
             })
 
         app.route('/v1/users')
-            .post(this.userController.create);
+            .post(this.userController.create)
+            .get(this.userController.getAllUsers);
+
+        app.route('/v1/users/:userId')
+            .put(this.userController.update)
+            .get(this.userController.getUser)
+            .delete(this.userController.deleteUser);
     }
 }
