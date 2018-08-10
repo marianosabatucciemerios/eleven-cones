@@ -16,5 +16,8 @@ export class UserRoutes {
 
         app.route('/v1/users')
             .post(this.userController.create);
+
+        app.route('/v1/users/:userId')
+            .put(this.userController.update);
     }
 }

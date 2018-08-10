@@ -89,15 +89,16 @@ export class UserController {
                     ])
                         .then(() => {
                             userServices.updateUser(req.params.userId, updateValues)
-                                .then(() => {
-                                    return res.status(200).send();
+                                .then((data) => {
+                                    let test = data;
+                                    return res.status(200).send(test);
                                 })
                                 .catch((err) => {
-                                    return res.status(400).send(err);
+                                    return res.status(400).send({code: err.code, message: err.message});
                                 });
                         })
                         .catch((err) => {
-                            return res.status(500).send(err)
+                            return res.status(500).send({code: err.code, message: err.message})
                         });
                 }
             })

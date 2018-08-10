@@ -234,9 +234,9 @@ export class UserServices {
 
     public updateUser(curentUserId, updateValues) {
         return new Promise(function (resolve, reject) {
-            UserSchema.findByIdAndUpdate(curentUserId, updateValues)
-                .then(() => {
-                    resolve();
+            User.findByIdAndUpdate(curentUserId, updateValues)
+                .then((data) => {
+                    resolve(data);
                 })
                 .catch((err) => {
                     reject({
@@ -250,7 +250,7 @@ export class UserServices {
 
     public getUser(id) {
         return new Promise(function (resolve, reject) {
-            return UserSchema.findById(id, '-local')
+            return User.findById(id, '-local')
                 .then((data) => {
                     return resolve(data);
                 })
