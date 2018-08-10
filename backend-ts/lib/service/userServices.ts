@@ -247,6 +247,32 @@ export class UserServices {
         });
     }
 
+    public getAllUsers() {
+        return new Promise(function (resolve, reject) {
+            return User.find({}, '-local')
+                .then((data) => {
+                    return resolve(data);
+                })
+                .catch((err) => {
+                    return reject({
+                        code: "USER00200",
+                        message: "Some error occurred while retrieving users." + err
+                    });
+                });
+        });
+    }
+
+    public deleteUser(id) {
+        let userId = id;
+        return new Promise(function (resolve, reject) {
+            return User.remove({_id: Object(id)}, (err, user) => {
+                    return resolve(userId);
+                })
+                .catch((err) => {
+                    return reject(err);
+                });
+        });
+    }
 
     public getUser(id) {
         return new Promise(function (resolve, reject) {

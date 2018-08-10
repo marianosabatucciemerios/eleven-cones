@@ -102,4 +102,40 @@ export class UserController {
                 }
             })
     }
+
+    public getUser(req, res) {
+        userServices.getUser(req.params.userId)
+            .then((currentUser) => {
+                return res.status(200).send(currentUser);
+            })
+            .catch((err) => {
+                return res.status(500).send({code: err.code, message: err.message})
+            })
+    }
+
+    public getAllUsers(req, res) {
+        userServices.getAllUsers()
+            .then((users) => {
+                return res.status(200).send(users);
+            })
+            .catch((err) => {
+                return res.status(500).send({code: err.code, message: err.message})
+            })
+    }
+
+    public deleteUser(req, res) {
+        userServices.getUser(req.params.userId)
+            .then((currentUser: any) => {
+                userServices.deleteUser(currentUser.id)
+                    .then((user) => {
+                        return res.status(200).send("User " + user + " has been removed");
+                    })
+                    .catch((err) => {
+                        return res.status(500).send({code: err.code, message: err.message})
+                    })
+            })
+            .catch((err) => {
+                return res.status(500).send({code: err.code, message: err.message})
+            })
+    }
 };
