@@ -90,8 +90,7 @@ export class UserController {
                         .then(() => {
                             userServices.updateUser(req.params.userId, updateValues)
                                 .then((data) => {
-                                    let test = data;
-                                    return res.status(200).send(test);
+                                    return res.status(200).send(data);
                                 })
                                 .catch((err) => {
                                     return res.status(400).send({code: err.code, message: err.message});
