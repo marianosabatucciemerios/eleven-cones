@@ -16,16 +16,7 @@ export class UserRoutes {
 
         //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidHJvbG8iLCJpYXQiOjE1MzM5MzUwNzAsImV4cCI6MTUzNDUzOTg3MH0.SbNrLE8wyEk39MybOWqN0gA3lIls_Yz_4kp3Wq9q1B8
 
-        app.route('/v1/token')
-            .get((req: Request, res: Response) => {
-                const token = jwt.sign(this.user, jwtConfig.secretKey, {
-                    expiresIn: 604800 // 1 week
-                });
-
-                res.status(200).send({
-                    token: token
-                })
-            })
+        
         /*
         app.route('/v1/users/login-local')
         app.route('/login')
