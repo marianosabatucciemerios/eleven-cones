@@ -3,6 +3,7 @@ import * as bodyParser from "body-parser";
 import * as mongoose from "mongoose";
 import { Routes } from "./routes/crmRoutes";
 import { UserRoutes } from "./routes/userRoutes";
+import { AuthRoutes } from "./routes/authRoutes";
 
 class App {
 
@@ -10,6 +11,7 @@ class App {
     public mongoUrl: string = 'mongodb://localhost:27017/eleven-cones';
     public routePrv: Routes = new Routes();
     public userRoute: UserRoutes = new UserRoutes();
+    public authRoutes: AuthRoutes = new AuthRoutes();
 
     constructor() {
         this.app = express();
@@ -17,6 +19,7 @@ class App {
         this.mongoSetup();
         this.routePrv.routes(this.app);
         this.userRoute.userRoutes(this.app);
+        this.authRoutes.authRoutes(this.app);
     }
 
     private config(): void {
