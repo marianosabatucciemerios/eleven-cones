@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { UserController } from "../controllers/userController";
 import { jwtConfig } from "../config/jwtConfig";
-import { jwtServices } from "../service/jwServices";
+import { AuthorizationService } from "../service/authServices";
 import * as jwt from 'jsonwebtoken';
+
+const authServices: AuthorizationService = new AuthorizationService();
 
 export class UserRoutes {
 
@@ -36,19 +38,19 @@ export class UserRoutes {
          */
 
         app.route('/usertest')
-            .get(jwtServices, (req: Request, res: Response) => {
+            .get(authServices.verifyToken, (req: Request, res: Response) => {
                 res.status(200).send({
                     message: 'GET request user successfulll!!!!'
                 })
             })
 
         app.route('/v1/users')
-            .post(jwtServices, this.userController.create)
-            .get(jwtServices, this.userController.getAllUsers);
+            .post(authServices.verifyToken, this.userController.create)
+            .get(authServices.verifyToken, this.userController.getAllUsers);
 
         app.route('/v1/users/:userId')
-            .put(jwtServices, this.userController.update)
-            .get(jwtServices, this.userController.getUser)
-            .delete(jwtServices, this.userController.deleteUser);
+            .put(authServices.verifyToken, this.userController.update)
+            .get(authServices.verifyToken, this.userController.getUser)
+            .delete(authServices.verifyToken, this.userController.deleteUser);
     }
 }
