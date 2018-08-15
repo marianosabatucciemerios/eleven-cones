@@ -13,7 +13,7 @@ export class UserController {
     constructor(
     ) {}
     
-    public emailAvailable(req, res) {
+    public isEmailAvailable(req, res) {
         userServices.validateEmail(req.params.email)
             .then((emailAvailable: EmailAvailableDto) => {
                 return res.status(200).send(emailAvailable);
