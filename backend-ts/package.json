@@ -7,7 +7,8 @@
 		"build": "tsc",
 		"dev": "ts-node ./lib/server.ts",
 		"start": "nodemon ./dist/server.js",
-		"prod": "npm run build && npm run start"
+		"prod": "npm run build && npm run start",
+		"test": "mocha -r ts-node/register lib/**/*.spec.ts"
 	},
 	"author": "",
 	"license": "ISC",
@@ -21,6 +22,16 @@
 		"jsonwebtoken": "^8.3.0",
 		"moment": "^2.22.2",
 		"mongoose": "^5.2.5",
-		"nodemon": "^1.18.3"
+		"nodemon": "^1.18.3",
+		"typescript": "^3.0.1",
+		"ts-node": "^7.0.0"
+	},
+	"devDependencies": {
+		"@types/chai": "^4.1.4",
+		"@types/chai-http": "^3.0.5",
+		"@types/mocha": "^5.2.5",
+		"chai": "^4.1.2",
+		"chai-http": "^4.0.0",
+		"mocha": "^5.2.0"
 	}
 }
