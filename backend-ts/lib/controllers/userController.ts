@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import { UserSchema } from '../models/userModel';
 import { Request, Response } from 'express';
 import { UserServices } from '../service/userServices';
+import { EmailAvailableDto } from '../dto/emailAvailableDto';
 
 const User = mongoose.model('User', UserSchema);
 //const userService = mongoose.service('UserService', UserServices);
@@ -14,7 +15,7 @@ export class UserController {
     
     public emailAvailable(req, res) {
         userServices.validateEmail(req.params.email)
-            .then((emailAvailable) => {
+            .then((emailAvailable: EmailAvailableDto) => {
                 return res.status(200).send(emailAvailable);
             })
             .catch((err) => {
