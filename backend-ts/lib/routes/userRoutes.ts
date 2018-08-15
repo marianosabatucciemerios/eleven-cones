@@ -25,7 +25,7 @@ export class UserRoutes {
             })
         
         app.route('/v1/auth/email-available/:email')
-            .get(authServices.verifyToken, this.userController.emailAvailable);
+            .get(authServices.verifyToken, this.userController.isEmailAvailable);
 
         app.route('/v1/users')
             .post(authServices.verifyToken, this.userController.create)
