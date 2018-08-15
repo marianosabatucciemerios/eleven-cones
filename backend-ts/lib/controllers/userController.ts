@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import { UserSchema } from '../models/userModel';
 import { Request, Response } from 'express';
 import { UserServices } from '../service/userServices';
+import { EmailAvailableDto } from '../dto/emailAvailableDto';
 
 const User = mongoose.model('User', UserSchema);
 //const userService = mongoose.service('UserService', UserServices);
@@ -12,6 +13,16 @@ export class UserController {
     constructor(
     ) {}
     
+    public emailAvailable(req, res) {
+        userServices.validateEmail(req.params.email)
+            .then((emailAvailable: EmailAvailableDto) => {
+                return res.status(200).send(emailAvailable);
+            })
+            .catch((err) => {
+                return res.status(500).send(err);
+            })
+    }
+
     public create(req, res): any {
         Promise.all([
             userServices.validateFirstName(req.body.firstName),
@@ -25,11 +36,11 @@ export class UserController {
                         return res.status(201).send(data)
                     })
                     .catch((err) => {
-                        return res.status(400).send({code: err.code, message: err.message})
+                        return res.status(400).send(err)
                     });
             })
             .catch((err) => {
-                return res.status(400).send({code: err.code, message: err.message});
+                return res.status(400).send(err);
             });
     }
 
@@ -93,11 +104,11 @@ export class UserController {
                                     return res.status(200).send(data);
                                 })
                                 .catch((err) => {
-                                    return res.status(400).send({code: err.code, message: err.message});
+                                    return res.status(400).send(err);
                                 });
                         })
                         .catch((err) => {
-                            return res.status(500).send({code: err.code, message: err.message})
+                            return res.status(500).send(err)
                         });
                 }
             })
@@ -109,7 +120,7 @@ export class UserController {
                 return res.status(200).send(currentUser);
             })
             .catch((err) => {
-                return res.status(500).send({code: err.code, message: err.message})
+                return res.status(500).send(err)
             })
     }
 
@@ -119,7 +130,7 @@ export class UserController {
                 return res.status(200).send(users);
             })
             .catch((err) => {
-                return res.status(500).send({code: err.code, message: err.message})
+                return res.status(500).send(err)
             })
     }
 
@@ -131,11 +142,11 @@ export class UserController {
                         return res.status(200).send("User " + user + " has been removed");
                     })
                     .catch((err) => {
-                        return res.status(500).send({code: err.code, message: err.message})
+                        return res.status(500).send(err)
                     })
             })
             .catch((err) => {
-                return res.status(500).send({code: err.code, message: err.message})
+                return res.status(500).send(err)
             })
     }
 };

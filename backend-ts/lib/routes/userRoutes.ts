@@ -16,26 +16,6 @@ export class UserRoutes {
 
     public userRoutes(app): void {
 
-        //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidHJvbG8iLCJpYXQiOjE1MzM5MzUwNzAsImV4cCI6MTUzNDUzOTg3MH0.SbNrLE8wyEk39MybOWqN0gA3lIls_Yz_4kp3Wq9q1B8
-
-        
-        /*
-        app.route('/v1/users/login-local')
-        app.route('/login')
-            .get((req: Request, res: Response) => {
-                
-                // passport
-                
-                const token = jwt.sign(user, jwtConfig.secretKey, {
-                    expiresIn: 604800 // 1 week
-                });
-
-                res.status(200).send({
-                    token: token
-                })
-            })
-            .post(jwtServices, this.contactController.addNewContact);
-         */
 
         app.route('/usertest')
             .get(authServices.verifyToken, (req: Request, res: Response) => {
@@ -43,6 +23,9 @@ export class UserRoutes {
                     message: 'GET request user successfulll!!!!'
                 })
             })
+        
+        app.route('/v1/auth/email-available/:email')
+            .get(authServices.verifyToken, this.userController.emailAvailable);
 
         app.route('/v1/users')
             .post(authServices.verifyToken, this.userController.create)

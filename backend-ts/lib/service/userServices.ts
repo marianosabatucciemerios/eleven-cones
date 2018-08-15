@@ -80,12 +80,11 @@ export class UserServices {
                 })
                 .then((data) => {
                     if (data) {
-                        return reject({
-                            code: "USER00023",
-                            message: "Email already taken."
+                        return resolve({
+                            emailAvailable: false
                         });
                     }
-                    return resolve();
+                    return resolve({emailAvailable: true});
                 });
         });
     }
