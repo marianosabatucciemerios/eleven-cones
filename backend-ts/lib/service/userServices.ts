@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+import { UserDto } from "dto/userDto";
 
 const User = mongoose.model('User', UserSchema);
 const utils: UtilServices = new UtilServices();
@@ -206,7 +207,7 @@ export class UserServices {
         });
     }
 
-    public createUser(firstName, lastName, email, password) {
+    public oldCreateUser(firstName, lastName, email, password) {
         let encryptPass = this.encryptPassword(password);
 
         return new Promise(function (resolve, reject) {
@@ -231,6 +232,28 @@ export class UserServices {
         });
     }
 
+    public createUser(email, password) {
+        let encryptPass = this.encryptPassword(password);
+
+        return new Promise(function (resolve, reject) {
+            User.create({
+                email: email,
+                local: {
+                    password: encryptPass
+                }
+            })
+                .then((data) => {
+                    data.local = null;
+                    resolve(data);
+                })
+                .catch(() => {
+                    reject({
+                        code: "USER00030",
+                        message: "Some error occurred while creating the user."
+                    });
+                });
+        });
+    }
     public updateUser(curentUserId, updateValues) {
         return new Promise(function (resolve, reject) {
             User.findByIdAndUpdate(curentUserId, updateValues)

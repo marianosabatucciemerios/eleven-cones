@@ -3,16 +3,35 @@ import { UserSchema } from '../models/userModel';
 import { Request, Response } from 'express';
 import { UserServices } from '../service/userServices';
 import { EmailAvailableDto } from '../dto/emailAvailableDto';
+import { UserDto } from '../dto/userDto';
 
 const User = mongoose.model('User', UserSchema);
-//const userService = mongoose.service('UserService', UserServices);
 const userServices: UserServices = new UserServices();
 
 export class UserController {
-
     constructor(
     ) {}
-    
+
+    public createUserSignUp (req, res) {
+        Promise.all([
+            userServices.validateEmail(req.body.email),
+            userServices.validatePassword(req.body.password)
+        ])
+            .then(() => {
+                userServices.createUser(req.body.email, req.body.password)
+                .then((user) => {
+                    console.log(user);
+                    return res.status(201).send(user)
+                })
+                .catch((err) => {
+                    return res.status(400).send(err)
+                });
+            })
+            .catch((err) => {
+                return res.status(400).send(err);
+            });
+    }
+
     public isEmailAvailable(req, res) {
         userServices.validateEmail(req.params.email)
             .then((emailAvailable: EmailAvailableDto) => {
@@ -31,7 +50,7 @@ export class UserController {
             userServices.validatePassword(req.body.password)
         ])
             .then(() => {
-                userServices.createUser(req.body.firstName, req.body.lastName, req.body.email, req.body.password)
+                userServices.oldCreateUser(req.body.firstName, req.body.lastName, req.body.email, req.body.password)
                     .then((data) => {
                         return res.status(201).send(data)
                     })
