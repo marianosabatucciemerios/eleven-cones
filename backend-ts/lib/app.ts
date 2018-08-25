@@ -4,6 +4,7 @@ import * as mongoose from "mongoose";
 import { Routes } from "./routes/crmRoutes";
 import { UserRoutes } from "./routes/userRoutes";
 import { AuthRoutes } from "./routes/authRoutes";
+import { SportRoutes } from "./routes/sportRoutes";
 
 class App {
 
@@ -12,6 +13,7 @@ class App {
     public routePrv: Routes = new Routes();
     public userRoute: UserRoutes = new UserRoutes();
     public authRoutes: AuthRoutes = new AuthRoutes();
+    public sportRoutes: SportRoutes = new SportRoutes();
 
     constructor() {
         this.app = express();
@@ -20,6 +22,7 @@ class App {
         this.routePrv.routes(this.app);
         this.userRoute.userRoutes(this.app);
         this.authRoutes.authRoutes(this.app);
+        this.sportRoutes.sportRoutes(this.app);
     }
 
     private config(): void {

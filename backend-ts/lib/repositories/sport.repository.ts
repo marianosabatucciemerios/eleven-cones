@@ -1,5 +1,5 @@
-import { ISport } from "./interfaces/Isport.repository";
-import { SportDto } from "dto/sportDto.interface";
+import { ISport } from "../repositories/interfaces/Isport.repository";
+import { SportDto } from "../dto/sportDto.interface";
 import { SportSchema } from "./../models/sportModel";
 import * as mongoose from 'mongoose';
 
