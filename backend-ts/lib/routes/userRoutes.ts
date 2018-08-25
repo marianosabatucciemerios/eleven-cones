@@ -30,6 +30,9 @@ export class UserRoutes {
         app.route('/v1/users')
             .post(authServices.verifyToken, this.userController.create)
             .get(authServices.verifyToken, this.userController.getAllUsers);
+        
+        app.route('/v1/auth/signup-local')
+            .post(authServices.verifyToken, this.userController.createUserSignUp);
 
         app.route('/v1/users/:userId')
             .put(authServices.verifyToken, this.userController.update)
