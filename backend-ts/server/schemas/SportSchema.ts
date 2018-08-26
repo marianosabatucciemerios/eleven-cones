@@ -1,5 +1,5 @@
 import { Schema, Model, model } from 'mongoose';
-import { ISportDocument } from 'interfaces/ISportDocument';
+import { ISportDocument } from '../interfaces/ISportDocument';
 
 let sport = new Schema(
     {
