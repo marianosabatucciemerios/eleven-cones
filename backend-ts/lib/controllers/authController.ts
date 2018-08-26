@@ -26,40 +26,40 @@ export class AutController {
             });
         }
 
-        User.findByEmail(req.body.email)
-            .then((user) => {
-                if (user) {
-                    bcrypt.compare(req.body.password, user.local.password)
-                        .then((resPwd) => {
-                            if (resPwd) {
-                                var token = jwt.sign({ id: user._id }, jwtConfig.secretKey, {
-                                    expiresIn: 86400 // expires in 24 hours
-                                });
+        // User.findByEmail(req.body.email)
+        //     .then((user) => {
+        //         if (user) {
+        //             bcrypt.compare(req.body.password, user.local.password)
+        //                 .then((resPwd) => {
+        //                     if (resPwd) {
+        //                         var token = jwt.sign({ id: user._id }, jwtConfig.secretKey, {
+        //                             expiresIn: 86400 // expires in 24 hours
+        //                         });
             
-                                return res.status(200).send({
-                                    auth: true,
-                                    token: token
-                                });
-                            }
+        //                         return res.status(200).send({
+        //                             auth: true,
+        //                             token: token
+        //                         });
+        //                     }
 
-                            return res.status(400).send({
-                                code: "LOGIN00031",
-                                message: "User or password is not correct."
-                            });
-                        })
-                        .catch((err) => {
-                            if (err) {
-                                return res.status(500).send({code: "LOGIN00031", message: "Error authenticating user."});
-                            }
-                        })
-                }
-            })
-            .catch((err) => {
-                return res.status(500).send({
-                    code: "LOGIN00030",
-                    message: "User does not exit."
-                });
-            });
+        //                     return res.status(400).send({
+        //                         code: "LOGIN00031",
+        //                         message: "User or password is not correct."
+        //                     });
+        //                 })
+        //                 .catch((err) => {
+        //                     if (err) {
+        //                         return res.status(500).send({code: "LOGIN00031", message: "Error authenticating user."});
+        //                     }
+        //                 })
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         return res.status(500).send({
+        //             code: "LOGIN00030",
+        //             message: "User does not exit."
+        //         });
+        //     });
 
     }
 }
