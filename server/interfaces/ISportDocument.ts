@@ -1,7 +1,6 @@
 import { Document } from 'mongoose';
+import { ISport } from './ISport';
 
-export interface ISportDocument extends Document{
-    code: String,
-    name: String,
-    description?: String
+export interface ISportDocument extends ISport, Document{
+    //
 }
