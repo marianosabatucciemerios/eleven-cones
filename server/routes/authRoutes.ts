@@ -1,5 +1,5 @@
 import { jwtConfig } from "../config/jwtConfig";
-import { AuthorizationService } from "../service/authServices";
+import { AuthorizationService } from "../services/authServices";
 import * as jwt from 'jsonwebtoken';
 import { Request, Response } from "express";
 import { AutController } from "../controllers/authController";

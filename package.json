@@ -6,6 +6,7 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": "ts-node ./server/server.ts",
+		"devmon": "nodemon --watch 'server/**/*.ts' --ignore 'server/**/*.spec.ts' --exec 'ts-node' server/server.ts",
 		"start": "nodemon ./dist/server.js",
 		"prod": "npm run build && npm run start",
 		"test": "mocha -r ts-node/register server/**/*.spec.ts"

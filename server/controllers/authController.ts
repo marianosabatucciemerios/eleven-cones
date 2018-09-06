@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Request, Response } from 'express';
-import { UserServices } from '../service/userServices';
+import { UserServices } from '../services/userServices';
 import { UserSchema } from '../models/userModel';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserController } from "../controllers/userController";
 import { jwtConfig } from "../config/jwtConfig";
-import { AuthorizationService } from "../service/authServices";
+import { AuthorizationService } from "../services/authServices";
 import * as jwt from 'jsonwebtoken';
 
 const authServices: AuthorizationService = new AuthorizationService();
