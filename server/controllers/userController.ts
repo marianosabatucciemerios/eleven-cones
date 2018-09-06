@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { UserSchema } from '../models/userModel';
 import { Request, Response } from 'express';
-import { UserServices } from '../service/userServices';
+import { UserServices } from '../services/userServices';
 import { EmailAvailableDto } from '../dto/emailAvailableDto';
 
 const User = mongoose.model('User', UserSchema);

@@ -15,12 +15,12 @@ export class BaseRepository<T extends Document> implements IRead<T>, IWrite<T> {
         return this._model.create(item);
     }
 
-    public async update(_id: Types.ObjectId, item: T): Promise<T> {
-        return this._model.update({ _id: _id }, item);
+    public async update(id: String, item: T): Promise<T> {
+        return this._model.update({ _id: id }, item);
     }
 
-    public async delete(_id: Types.ObjectId): Promise<T> {
-        return this._model.remove({ _id: _id });
+    public async delete(id: String): Promise<T> {
+        return this._model.remove({ _id: id });
     }
 
     // IRead
@@ -32,8 +32,12 @@ export class BaseRepository<T extends Document> implements IRead<T>, IWrite<T> {
         return this._model.find();
     }
 
-    public async findById(_id: Types.ObjectId): Promise<T> {
-        return this._model.findById(_id);
+    public async findById(id: String): Promise<T> {
+        return this._model.findById(id);
+    }
+
+    public async findByCode(code: String): Promise<T> {
+        return this._model.findOne({'code': code});
     }
 
     public async findOne(cond?: Object): Promise<T> {

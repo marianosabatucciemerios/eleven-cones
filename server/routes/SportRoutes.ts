@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { SportController } from "../controllers/SportController";
-import { AuthorizationService } from "../service/authServices";
+import { AuthorizationService } from "../services/authServices";
 
 export class SportRoutes {
 
@@ -16,12 +16,11 @@ export class SportRoutes {
         let router = Router();
 
         router.post('/v1/sports', this._authServices.verifyToken, this._sportController.create);
+        router.get('/v1/sports', this._authServices.verifyToken, this._sportController.findAll)
+        router.put('/v1/sports/:sportId', this._authServices.verifyToken, this._sportController.update)
+        router.get('/v1/sports/:sportId', this._authServices.verifyToken, this._sportController.findById)
+        router.delete('/v1/sports/:sportId', this._authServices.verifyToken, this._sportController.delete)
 
-        // app.route('/v1/sports').get(_authServices.verifyToken, this._sportController.getAll)
-        // app.route('/v1/sports/:sportId').put(_authServices.verifyToken, this._sportController.update)
-        // app.route('/v1/sports/:sportId').get(_authServices.verifyToken, this._sportController.getOne)
-        // app.route('/v1/sports/:sportId').delete(_authServices.verifyToken, this._sportController.delete)
-
-        return router
+        return router;
     }
 }
