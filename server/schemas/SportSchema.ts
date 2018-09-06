@@ -4,8 +4,8 @@ import { ISportDocument } from '../interfaces/ISportDocument';
 let sport = new Schema(
     {
         code: { type: String, required: true, unique: true },
-        name: { type: String, required: true },
-        description: { type: String }
+        name: { en: { type: String, required: true }, es: { type: String, required: true } },
+        description: { en: { type: String }, es: { type: String } }
     },
     { timestamps: true }
 );
