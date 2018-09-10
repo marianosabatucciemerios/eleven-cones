@@ -1,5 +1,7 @@
+import { ITranslation } from './ITranslation';
+
 export interface ISport {
     code: String,
-    name: String,
-    description?: String
+    name: ITranslation,
+    description?: ITranslation
 }
