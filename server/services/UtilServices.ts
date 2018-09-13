@@ -33,15 +33,12 @@ export class UtilServices {
     }
 
     public isPatternValid(value: String, patternCode: String): Boolean {
-
         let pattern = this.getPatternByCode(patternCode.toUpperCase());
-
         return (pattern.test(value));
     }
 
     public isStringEmpty(value: String): Boolean {
         return ((value == null) || (value == undefined) || (value == "") );
     }
-
 }
 
