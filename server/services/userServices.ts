@@ -1,6 +1,6 @@
 import { UserSchema } from "../models/userModel";
 import { PositionSchema } from "../models/positionModel";
-// import { UtilServices } from "./UtilServices";
+import { UtilServices } from "./UtilServices";
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
@@ -12,7 +12,7 @@ const utils: UtilServices = new UtilServices();
 export class UserServices {
 
     public validateFirstName(firstName) {
-        let patterns = utils.getPatternKey('ALPHA_SUPER');
+        let patterns = utils.getPatternByCode('ALPHA_SUPER');
         return new Promise(function (resolve, reject) {
             if (!firstName) {
                 return reject({
@@ -32,7 +32,7 @@ export class UserServices {
     }
 
     public validateLastName(lastName) {
-        let patterns: any = utils.getPatternKey('ALPHA_SUPER');
+        let pattern: any = utils.getPatternByCode('ALPHA_SUPER');
 
         return new Promise(function (resolve, reject) {
             if (!lastName) {
@@ -42,7 +42,7 @@ export class UserServices {
                 });
             }
 
-            if (!patterns.test(String(lastName))) {
+            if (!pattern.test(String(lastName))) {
                 return reject({
                     code: "USER00013",
                     message: "Last Name is invalid."
@@ -53,7 +53,7 @@ export class UserServices {
     }
 
     public validateEmail(email) {
-        let patterns: any = utils.getPatternKey('EMAIL');
+        let pattern: any = utils.getPatternByCode('EMAIL');
 
         return new Promise(function (resolve, reject) {
 
@@ -64,14 +64,14 @@ export class UserServices {
                 });
             }
 
-            if (!patterns.test(String(email))) {
+            if (!pattern.test(String(email))) {
                 return reject({
                     code: "USER00021",
                     message: "Email not valid"
                 });
             }
 
-            return User.findByEmail(email)
+            return UserSchema.statics.findByEmail(email)
                 .catch((err) => {
                     return reject({
                         code: "USER00022",
@@ -174,16 +174,18 @@ export class UserServices {
 
     public validatePosition(position) {
         return new Promise(function (resolve, reject) {
-            return PositionSchema.findByCode(position)
-                .then((data) => {
-                    return resolve(data);
-                })
-                .catch((err) => {
-                    return reject({
-                        code: "USER00060",
-                        message: "Position is not valid." + err
-                    });
-                });
+
+            return resolve(position);
+            // return PositionSchema.findByCode(position)
+            //     .then((data) => {
+            //         return resolve(data);
+            //     })
+            //     .catch((err) => {
+            //         return reject({
+            //             code: "USER00060",
+            //             message: "Position is not valid." + err
+            //         });
+            //     });
         });
     }
 
@@ -219,7 +221,7 @@ export class UserServices {
                 }
             })
                 .then((data) => {
-                    data.local = null;
+                    // data.local = null;
                     resolve(data);
                 })
                 .catch((err) => {
@@ -264,7 +266,7 @@ export class UserServices {
     public deleteUser(id) {
         let userId = id;
         return new Promise(function (resolve, reject) {
-            return User.remove({_id: Object(id)}, (err, user) => {
+            return User.remove({_id: Object(id)}, (err) => {
                     return resolve(userId);
                 })
                 .catch((err) => {
