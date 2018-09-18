@@ -1,5 +1,4 @@
-// import { Sport } from "../entities/Sport";
-import * as express from "express";
+import { Request, Response } from "express";
 import { ISport } from "../interfaces/ISport";
 import { ISportDocument } from '../interfaces/ISportDocument';
 import { ValidationServices } from "../services/ValidationServices";
@@ -10,18 +9,19 @@ export class SportController {
 
     static _validationServices = new ValidationServices();
     static _sportRepository = new SportRepository();
-    static _parseSportParams(req: express.Request): ISport {
+    static _parseSportParams(req: Request): ISport {
 
         let sport: ISport = {
             code: req.body.code,
             name: <ITranslation>{
                 en: req.body.name.en ? req.body.name.en : '',
                 es: req.body.name.es ? req.body.name.es : ''
-            }
+            },
+            isActive: true
         }
 
         if (req.body.description) {
-            sport.description = <ITranslation> {};
+            sport.description = <ITranslation>{};
             req.body.description.en ? sport.description.en = req.body.description.en : sport.description.en = '';
             req.body.description.es ? sport.description.es = req.body.description.es : sport.description.es = '';
         }
@@ -29,26 +29,29 @@ export class SportController {
         return sport;
     }
 
-    public async create(req: express.Request, res: express.Response): Promise<any> {
+    public async create(req: Request, res: Response): Promise<any> {
 
         let sport: ISport = SportController._parseSportParams(req);
 
         try {
             // Code
+            await SportController._validationServices.validateEmptiness("CODE", sport.code);
+
             if (sport.code) {
-                await SportController._validationServices.validateEmptiness("CODE", sport.code);
                 await SportController._validationServices.validatePattern("CODE", sport.code);
                 await SportController._validationServices.validateUniqueness("CODE", sport.code, SportController._sportRepository);
             }
 
             // Name
+            await SportController._validationServices.validateEmptiness("NAME", sport.name.en);
+
             if (sport.name.en) {
-                await SportController._validationServices.validateEmptiness("NAME", sport.name.en);
                 await SportController._validationServices.validatePattern("NAME", sport.name.en);
             }
 
+            await SportController._validationServices.validateEmptiness("NAME", sport.name.es);
+
             if (sport.name.es) {
-                await SportController._validationServices.validateEmptiness("NAME", sport.name.es);
                 await SportController._validationServices.validatePattern("NAME", sport.name.es);
             }
 
@@ -66,14 +69,14 @@ export class SportController {
             }
 
             let newSport: ISportDocument = await SportController._sportRepository.create(<ISportDocument>sport);
-            return res.status(201).json(newSport);
+            return res.status(201).json(newSport._id);
         }
         catch (err) {
             return res.status(409).json(err);
         }
     }
 
-    public async update(req: express.Request, res: express.Response) {
+    public async update(req: Request, res: Response) {
 
         let updateSport: ISport = SportController._parseSportParams(req);
 
@@ -134,7 +137,7 @@ export class SportController {
         }
     }
 
-    public async delete(req: express.Request, res: express.Response) {
+    public async delete(req: Request, res: Response) {
         try {
             await SportController._sportRepository.delete(req.params.sportId);
             return res.status(204).json();
@@ -144,7 +147,7 @@ export class SportController {
         }
     }
 
-    public async findAll(req: express.Request, res: express.Response) {
+    public async findAll(req: Request, res: Response) {
         try {
             let sports: ISportDocument[] = await SportController._sportRepository.findAll();
 
@@ -159,7 +162,7 @@ export class SportController {
         }
     }
 
-    public async findById(req: express.Request, res: express.Response) {
+    public async findById(req: Request, res: Response) {
         try {
             let sportId: String = req.params.sportId;
 
@@ -176,7 +179,7 @@ export class SportController {
         }
     }
 
-    public async findByCode(req: express.Request, res: express.Response) {
+    public async findByCode(req: Request, res: Response) {
         try {
             let sportId: String = req.params.sportId;
 
@@ -193,7 +196,7 @@ export class SportController {
         }
     }
 
-    public async find(req: express.Request, res: express.Response) {
+    public async find(req: Request, res: Response) {
         //     try {
         //         let sports: ISportDocument[] = await SportController._sportRepository.find(req.cond, req.fields, req.options);
         //         return res.status(200).json(sports);
@@ -203,7 +206,7 @@ export class SportController {
         //     }
     }
 
-    public async findOne(req: express.Request, res: express.Response) {
+    public async findOne(req: Request, res: Response) {
         //     try {
 
         //     } catch (error) {

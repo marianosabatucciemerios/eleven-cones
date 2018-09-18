@@ -1,39 +1,28 @@
-import { Request, Response } from "express";
-import { UserController } from "../controllers/userController";
-import { jwtConfig } from "../config/jwtConfig";
+import { Router } from "express";
+import { UserController } from "../controllers/UserController";
 import { AuthorizationService } from "../services/authServices";
-import * as jwt from 'jsonwebtoken';
-
-const authServices: AuthorizationService = new AuthorizationService();
 
 export class UserRoutes {
 
-    public userController: UserController = new UserController();
+    private _authServices: AuthorizationService;
+    private _userController: UserController;
 
-    public user = {
-        name: 'trolo'
+    constructor() {
+        this._authServices = new AuthorizationService();
+        this._userController = new UserController();
     }
 
-    public userRoutes(app): void {
+    public get routes(): Router {
+        let router = Router();
 
+        router.post('/v1/users', this._authServices.verifyToken, this._userController.create);
+        router.get('/v1/users', this._authServices.verifyToken, this._userController.findAll)
+        router.put('/v1/users/:userId', this._authServices.verifyToken, this._userController.update)
+        router.get('/v1/users/:userId', this._authServices.verifyToken, this._userController.findById)
+        router.delete('/v1/users/:userId', this._authServices.verifyToken, this._userController.delete)
 
-        app.route('/usertest')
-            .get(authServices.verifyToken, (req: Request, res: Response) => {
-                res.status(200).send({
-                    message: 'GET request user successfulll!!!!'
-                })
-            })
-        
-        app.route('/v1/auth/email-available/:email')
-            .get(authServices.verifyToken, this.userController.isEmailAvailable);
+        // router.get('/v1/users/email/:userEmail', this._authServices.verifyToken, this._userController.findByEmail)
 
-        app.route('/v1/users')
-            .post(authServices.verifyToken, this.userController.create)
-            .get(authServices.verifyToken, this.userController.getAllUsers);
-
-        app.route('/v1/users/:userId')
-            .put(authServices.verifyToken, this.userController.update)
-            .get(authServices.verifyToken, this.userController.getUser)
-            .delete(authServices.verifyToken, this.userController.deleteUser);
+        return router;
     }
 }

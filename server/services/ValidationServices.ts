@@ -38,6 +38,12 @@ export class ValidationServices {
             case 'CODE':
                 patternCode = 'CODE';
                 break;
+            case 'EMAIL':
+                patternCode = 'EMAIL';
+                break;
+            case 'PASSWORD':
+                patternCode = 'PASSWORD';
+                break;
             default:
                 patternCode = 'ALPHA_NUMERIC_SPACES';
                 break;
@@ -51,12 +57,12 @@ export class ValidationServices {
 
     }
 
-    public async validateUniqueness(field: String, code: String, _repoServices: any): Promise<IBasicError> {
+    public async validateUniqueness(field: String, item: String, _repoServices: any): Promise<IBasicError> {
 
         let error: IBasicError = {
             code: "VALIDATIONS_CODE_UNIQUENESS",
             field: field,
-            message: field + "already exist."
+            message: field + " already exist."
         };
 
         return new Promise<IBasicError>(async (resolve, reject) => {
@@ -65,7 +71,10 @@ export class ValidationServices {
 
             switch (field.toUpperCase()) {
                 case 'CODE':
-                    found = await _repoServices.findByCode(code);
+                    found = await _repoServices.findByCode(item);
+                    break;
+                case 'EMAIL':
+                    found = await _repoServices.findOne({ email: item });
                     break;
                 default:
                     break;
