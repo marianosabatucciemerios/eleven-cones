@@ -1,40 +1,155 @@
 import { Request, Response } from "express";
-import { IUser } from "../interfaces/IUser";
-import { IUserDocument } from '../interfaces/IUserDocument';
-import { ValidationServices } from "../services/ValidationServices";
+import { UtilServices } from '../services/UtilServices';
 import { UserRepository } from '../repositories/UserRepository';
-import { ITranslation } from '../interfaces/ITranslation';
+import { IBasicError } from "interfaces/IBasicError";
+import { IUserDocument } from "interfaces/IUserDocument";
+import { IUser } from '../interfaces/IUser';
 
 export class UserController {
 
-    static _validationServices = new ValidationServices();
     static _userRepository = new UserRepository();
-    
-    public async create (req: Request, res: Response) {
+    static _utilServices = new UtilServices();
+
+    public async create(req: Request, res: Response) {
 
     }
 
-    public async update (req: Request, res: Response) {
+    public async update(req: Request, res: Response): Promise<Response> {
+
+        const VALIDATION_EMPTY: String = 'VALIDATIONS_EMTPY';
+        const VALIDATION_PATTERN: String = 'VALIDATIONS_PATTERN';
+        const DUPLICATED_EMAIL: String = 'DUPLICATED_EMAIL';
+
+        let _utils = UserController._utilServices;
+        let _repo = UserController._userRepository;
+
+        try {
+            let updateUser: IUser;
+            let found: IUserDocument;
+
+
+            // ==== First Name (firstName) ==== //
+            if (!req.body.firstName) {
+                throw <IBasicError>{
+                    code: VALIDATION_EMPTY,
+                    field: 'firstName',
+                    message: 'First Name cannot be empty.'
+                };
+            }
+
+            if (!_utils.isPatternValid(req.body.firstName, 'ALPHA_NUMERIC_SPACES')) {
+                throw <IBasicError>{
+                    code: VALIDATION_PATTERN,
+                    field: 'firstName',
+                    message: 'First Name does not match pattern crtieria.'
+                };
+            }
+
+            // ==== Last Name (firstName) ==== //
+            if (!req.body.lastName) {
+                throw <IBasicError>{
+                    code: VALIDATION_EMPTY,
+                    field: 'lastName',
+                    message: 'Last Name cannot be empty.'
+                };
+            }
+
+            if (!_utils.isPatternValid(req.body.lastName, 'ALPHA_NUMERIC_SPACES')) {
+                throw <IBasicError>{
+                    code: VALIDATION_PATTERN,
+                    field: 'lastName',
+                    message: 'Last Name does not match pattern crtieria.'
+                };
+            }
+
+            // ==== Birthdate ==== //
+            if (req.body.birthDate) {
+                if (!_utils.isPatternValid(req.body.birthDate, 'DATE')) {
+                    throw <IBasicError>{
+                        code: VALIDATION_PATTERN,
+                        field: 'birthDate',
+                        message: 'Birth Date does not match pattern crtieria.'
+                    };
+                }
+            }
+
+            // ==== Height ==== //
+            if (req.body.height) { }
+
+            // ==== Weight ==== //
+            if (req.body.weight) { }
+
+            // ==== Strong Foot ==== //
+            if (req.body.strongFoot) { }
+
+            // ==== Back Number ==== //
+            if (req.body.backNumber) { }
+
+            // ==== Field Position ==== //
+            if (req.body.fieldPosition) { }
+
+            // ==== Picture ==== //
+            if (req.body.picture) { }
+
+
+            // ==== Email (email) ==== //
+
+            // isEmpty?
+            if (!req.body.email) {
+                throw <IBasicError>{
+                    code: VALIDATION_EMPTY,
+                    field: 'email',
+                    message: 'Email cannot be empty.'
+                };
+            }
+
+            // isPatternValid?
+            if (!_utils.isPatternValid(req.body.email, 'EMAIL')) {
+                throw <IBasicError>{
+                    code: VALIDATION_PATERN,
+                    field: 'email',
+                    message: 'Email does not match pattern crtieria.'
+                };
+            }
+
+
+
+
+            // isAvailable?
+            found = await _repo.findOne({ email: req.body.email });
+
+            if (found) {
+                throw <IBasicError>{
+                    code: DUPLICATED_EMAIL,
+                    field: 'email',
+                    message: 'Email already registered.'
+                };
+            }
+            return res.status(200).json();
+
+        } catch (err) {
+            return res.status(409).json(err);
+        }
 
     }
 
-    public async delete (req: Request, res: Response) {
+    public async delete(req: Request, res: Response) {
 
     }
 
-    public async findAll (req: Request, res: Response) {
+    public async findAll(req: Request, res: Response) {
 
     }
 
-    public async findById (req: Request, res: Response) {
-
-    }
-    
-    public async findByCode (req: Request, res: Response) {
+    public async findById(req: Request, res: Response) {
 
     }
 
-    
+    public async findByCode(req: Request, res: Response) {
+
+    }
+
+
     // public isEmailAvailable(req, res) {
     //     userServices.validateEmail(req.params.email)
     //         .then((emailAvailable: EmailAvailableDto) => {
@@ -171,5 +286,5 @@ export class UserController {
     //             return res.status(500).send(err)
     //         })
     // }
-    
+
 };
