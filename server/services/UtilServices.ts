@@ -1,3 +1,6 @@
+import { IHeight } from "interfaces/IHeight";
+import { IWeight } from "interfaces/IWeight";
+
 export class UtilServices {
 
     static patterns: Object = {
@@ -18,8 +21,21 @@ export class UtilServices {
         COLOR: /^#(?:[0-9a-fA-F]{3}){1,2}$/,
         IP: /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/,
         CODE: /\b[A-za-z0-9]{3}\b/,
-        PASSWORD: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+        PASSWORD: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+        DATE: /^\d{4}-\d{2}-\d{2}$/
     }
+
+    static heightList: IHeight[] = [
+        { code: 'LB', name: { en: 'lb.', es: 'lb.' } },
+        { code: 'KG', name: { en: 'kg.', es: 'kg.' } }
+    ]
+
+    static weightList: IWeight[] = [
+        { code: 'CM', name: { en: 'cm.', es: 'cm.' } },
+        { code: 'FT', name: { en: 'ft.', es: 'ft.' } }
+    ]
+
+    ////
 
     public getAllPatterns(): Object {
         return UtilServices.patterns;
