@@ -51,7 +51,15 @@ export class AuthController {
                 };
             }
 
-            passwordValid = await compare(req.body.password, found.local.password);
+            passwordValid = await compare(req.body.password, <string>found.local.password);
+
+            if (!passwordValid) {
+                throw <IBasicError>{
+                    code: VALIDATION_LOGIN,
+                    field: 'login',
+                    message: 'Email or Password isn\'t correct.'
+                };                
+            }
 
             token = sign({ id: found._id }, jwtConfig.secretKey, {
                 expiresIn: jwtConfig.expiresIn
@@ -76,46 +84,6 @@ export class AuthController {
         let newUser: IUserDocument;
 
         try {
-
-            // // ==== First Name (firstName) ==== //
-
-            // // isEmpty?
-            // if (!req.body.firstName) {
-            //     throw <IBasicError>{
-            //         code: VALIDATION_EMPTY,
-            //         field: 'firstName',
-            //         message: 'First Name cannot be empty.'
-            //     };
-            // }
-
-            // // isPatternValid?
-            // if (!AuthController._utilServices.isPatternValid(req.body.firstName, 'ALPHA_NUMERIC_SPACES')) {
-            //     throw <IBasicError>{
-            //         code: VALIDATION_PATERN,
-            //         field: 'firstName',
-            //         message: 'First Name does not match pattern crtieria.'
-            //     };
-            // }
-
-            // // ==== Last Name (firstName) ==== //
-
-            // // isEmpty?
-            // if (!req.body.lastName) {
-            //     throw <IBasicError>{
-            //         code: VALIDATION_EMPTY,
-            //         field: 'lastName',
-            //         message: 'Last Name cannot be empty.'
-            //     };
-            // }
-
-            // // isPatternValid?
-            // if (!AuthController._utilServices.isPatternValid(req.body.lastName, 'ALPHA_NUMERIC_SPACES')) {
-            //     throw <IBasicError>{
-            //         code: VALIDATION_PATERN,
-            //         field: 'lastName',
-            //         message: 'Last Name does not match pattern crtieria.'
-            //     };
-            // }
 
             // ==== Email (email) ==== //
 
@@ -185,7 +153,7 @@ export class AuthController {
                 expiresIn: jwtConfig.expiresIn
             });
 
-            return res.status(201).json({ 'token': token });
+            return res.status(200).json({ 'token': token });
 
         } catch (err) {
             return res.status(409).json(err);
@@ -234,5 +202,8 @@ export class AuthController {
         // }
 
     }
+
+    // public async recoverPassword(req: Request, res: Response): Promise<Response> {
+    // }
 
 }
