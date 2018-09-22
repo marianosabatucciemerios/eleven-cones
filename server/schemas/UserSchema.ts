@@ -22,6 +22,10 @@ let user = new Schema(
             value: { type: Number }
         },
         email: { type: String, unique: true, lowercase: true },
+        phone: {
+            country: { type: String },
+            number: { type: String }
+        },
         local: {
             password: { type: String },
             passwordReset: { token: { type: String }, expired: { type: Date } }

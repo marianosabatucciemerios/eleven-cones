@@ -49,9 +49,8 @@ export class SportController {
                 await SportController._validationServices.validatePattern("NAME", sport.name.en);
             }
 
-            await SportController._validationServices.validateEmptiness("NAME", sport.name.es);
-
             if (sport.name.es) {
+                await SportController._validationServices.validateEmptiness("NAME", sport.name.es);
                 await SportController._validationServices.validatePattern("NAME", sport.name.es);
             }
 

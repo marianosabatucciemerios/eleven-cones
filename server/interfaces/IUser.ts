@@ -3,14 +3,18 @@ import { IUnitMeasure } from './IUnitMeasure';
 import { IPassport } from './IPassport';
 
 export interface IUser {
-    firstName?: String,
-    lastName?: String,
+    firstName: String,
+    lastName: String,
     picture?: String,
     birthdate?: Date,
     strongFoot?: IFoot,
     height?: IUnitMeasure,
     weight?: IUnitMeasure,
     email: String,
+    phone?: {
+        country: String,
+        number: String
+    }
     local?: {
         password: String,
         passwordReset?: {
