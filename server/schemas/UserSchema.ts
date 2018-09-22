@@ -6,7 +6,7 @@ let user = new Schema(
         firstName: { type: String },
         lastName: { type: String },
         picture: { data: Buffer, contentType: String },
-        birthdate: { type: Date },
+        birthDate: { type: Date },
         strongFoot: {
             code: { type: String },
             name: { en: { type: String }, es: { type: String } }
