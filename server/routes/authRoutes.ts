@@ -13,7 +13,8 @@ export class AuthRoutes {
         let router = Router();
 
         router.post('/v1/auth/login', this._authController.login);
-        router.post('/v1/auth/signup-local', this._authController.singupLocal)
+        router.post('/v1/auth/signup-local', this._authController.singupLocal);
+        // router.post('/v1/auth/recover-password', this._authController.recoverPassword);
 
         return router;
     }
