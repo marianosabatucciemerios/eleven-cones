@@ -1,4 +1,4 @@
-import { Document, Model, Types } from "mongoose";
+import { Document, Model } from "mongoose";
 import { IRead } from "../interfaces/IRead";
 import { IWrite } from "../interfaces/IWrite";
 
@@ -20,7 +20,7 @@ export class BaseRepository<T extends Document> implements IRead<T>, IWrite<T> {
     }
 
     public async delete(id: String): Promise<T> {
-        return this._model.remove({ _id: id });
+        return this._model.findByIdAndUpdate(id, { isActive: false, inactiveDate: new Date() });
     }
 
     // IRead
@@ -37,7 +37,7 @@ export class BaseRepository<T extends Document> implements IRead<T>, IWrite<T> {
     }
 
     public async findByCode(code: String): Promise<T> {
-        return this._model.findOne({'code': code});
+        return this._model.findOne({ 'code': code });
     }
 
     public async findOne(cond?: Object): Promise<T> {

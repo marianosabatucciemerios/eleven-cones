@@ -1,7 +1,7 @@
 import { ITranslation } from './ITranslation';
 
-export interface ISport {
+export interface IUnitMeasure {
     code: String,
     name: ITranslation,
-    description?: ITranslation
+    value: Number
 }

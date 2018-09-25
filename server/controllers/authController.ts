@@ -1,65 +1,117 @@
-import * as mongoose from 'mongoose';
 import { Request, Response } from 'express';
-import { UserServices } from '../services/userServices';
-import { UserSchema } from '../models/userModel';
-import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
+import { hashSync, compare, compareSync } from 'bcryptjs';
+import { sign } from 'jsonwebtoken'
 import { jwtConfig } from "../config/jwtConfig";
+import { UserRepository } from '../repositories/UserRepository';
+import { IUserDocument } from 'interfaces/IUserDocument';
+import { UserController } from './userController';
+import { IUser } from 'interfaces/IUser';
+import { IBasicError } from '../interfaces/IBasicError';
+import { UtilServices } from '../services/UtilServices';
 
-const userServices: UserServices = new UserServices();
-const User = mongoose.model('User', UserSchema);
+export class AuthController {
 
-export class AutController {
-    public login(req, res) {
+    static _userRepository = new UserRepository();
+    static _utilServices = new UtilServices();
 
-        if (!req.body.email) {
-            return res.status(400).send({
-                code: "LOGIN00010",
-                message: "Email cannot be empty"
-            });
+    private _getSignedPayload(payload): String {
+        return sign(payload, jwtConfig.secretKey, { expiresIn: jwtConfig.expiresIn });
+    }
+
+    public async login(req: Request, res: Response): Promise<Response> {
+
+        const VALIDATION_EMPTY: String = 'VALIDATIONS_EMTPY';
+        const VALIDATION_LOGIN: String = 'VALIDATIONS_LOGIN';
+
+        let found: IUserDocument;
+        let token: String;
+        let passwordValid: Boolean;
+
+        try {
+
+            if (!req.body.email) {
+                throw <IBasicError>{
+                    code: VALIDATION_EMPTY,
+                    field: 'email',
+                    message: 'Email cannot be empty.'
+                };
+            }
+
+            if (!req.body.password) {
+                throw <IBasicError>{
+                    code: VALIDATION_EMPTY,
+                    field: 'password',
+                    message: 'Password cannot be empty.'
+                };
+            }
+
+            found = await AuthController._userRepository.findOne({ email: req.body.email });
+
+            if (!found) {
+                throw <IBasicError>{
+                    code: VALIDATION_LOGIN,
+                    field: 'login',
+                    message: 'Email or Password isn\'t correct.'
+                };
+            }
+
+            passwordValid = await compare(req.body.password, <string>found.local.password);
+
+            if (!passwordValid) {
+                throw <IBasicError>{
+                    code: VALIDATION_LOGIN,
+                    field: 'login',
+                    message: 'Email or Password isn\'t correct.'
+                };
+            }
+
+            token = this._getSignedPayload({ id: found._id });
+
+            return res.status(200).json({ 'token': token });
+
+        } catch (err) {
+            return res.status(400).json(err);
         }
-    
-        if (!req.body.password) {
-            return res.status(400).send({
-                code: "LOGIN00020",
-                message: "Password cannot be empty"
-            });
-        }
-
-        // User.findByEmail(req.body.email)
-        //     .then((user) => {
-        //         if (user) {
-        //             bcrypt.compare(req.body.password, user.local.password)
-        //                 .then((resPwd) => {
-        //                     if (resPwd) {
-        //                         var token = jwt.sign({ id: user._id }, jwtConfig.secretKey, {
-        //                             expiresIn: 86400 // expires in 24 hours
-        //                         });
-            
-        //                         return res.status(200).send({
-        //                             auth: true,
-        //                             token: token
-        //                         });
-        //                     }
-
-        //                     return res.status(400).send({
-        //                         code: "LOGIN00031",
-        //                         message: "User or password is not correct."
-        //                     });
-        //                 })
-        //                 .catch((err) => {
-        //                     if (err) {
-        //                         return res.status(500).send({code: "LOGIN00031", message: "Error authenticating user."});
-        //                     }
-        //                 })
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         return res.status(500).send({
-        //             code: "LOGIN00030",
-        //             message: "User does not exit."
-        //         });
-        //     });
 
     }
+
+    public async singupLocal(req: Request, res: Response): Promise<Response> {
+
+        try {
+
+            let emailFound: IUserDocument;
+            let token: String;
+            let newUser: IUserDocument;
+            let user: IUser
+            let userEmail: String = req.body.email;
+
+            emailFound = await AuthController._userRepository.findByEmail(userEmail);
+
+            if (emailFound) {
+                throw <IBasicError>{
+                    code: 'DUPLICATED_EMAIL',
+                    field: 'email',
+                    message: 'Email already registered.'
+                };
+            }
+
+            user = {
+                email: req.body.email,
+                local: {
+                    password: hashSync(req.body.password, 12)
+                },
+                isActive: true
+            };
+
+            newUser = await UserController._userRepository.create(<IUserDocument>user);
+
+            token = this._getSignedPayload({ id: newUser._id });
+
+            return res.status(200).json({ 'token': token });
+        } catch (err) {
+            return res.status(400).json(err);
+        }
+
+    }
+
 }

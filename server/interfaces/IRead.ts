@@ -1,5 +1,3 @@
-import { Types } from "mongoose";
-
 export interface IRead<T> {
     find(cond?: Object, fields?: Object, options?: Object): Promise<T[]>;
     findAll(): Promise<T[]>;

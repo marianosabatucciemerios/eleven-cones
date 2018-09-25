@@ -17,8 +17,12 @@ export class UtilServices {
         ZIPCODE: /(\d{5}([\-]\d{4})?)/,
         COLOR: /^#(?:[0-9a-fA-F]{3}){1,2}$/,
         IP: /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/,
-        CODE: /\b[A-za-z0-9]{3}\b/
+        CODE: /\b[A-za-z0-9]{3}\b/,
+        PASSWORD: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+        DATE: /^\d{4}-\d{2}-\d{2}$/
     }
+
+    ////
 
     public getAllPatterns(): Object {
         return UtilServices.patterns;
