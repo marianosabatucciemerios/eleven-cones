@@ -7,7 +7,7 @@ export class UserController {
 
     static _userRepository = new UserRepository();
 
-    public async create(req: Request, res: Response) {
+    public async create(req: Request, res: Response): Promise<Response> {
         try {
             let user: IUser = req.body;
             let newUser: IUserDocument = await UserController._userRepository.create(<IUserDocument>user);
@@ -31,7 +31,7 @@ export class UserController {
         }
     }
 
-    public async delete(req: Request, res: Response) {
+    public async delete(req: Request, res: Response): Promise<Response> {
         try {
             let userId: String = req.params.userId;
             let deletedUser: IUserDocument = await UserController._userRepository.delete(userId);
@@ -41,7 +41,7 @@ export class UserController {
         }
     }
 
-    public async findAll(req: Request, res: Response) {
+    public async findAll(req: Request, res: Response): Promise<Response> {
         try {
             let users: IUserDocument[] = await UserController._userRepository.findAll();
             return res.status(200).json(users);
@@ -50,7 +50,7 @@ export class UserController {
         }
     }
 
-    public async findById(req: Request, res: Response) {
+    public async findById(req: Request, res: Response): Promise<Response> {
         try {
             let userId: String = req.params.userId;
             let user: IUserDocument = await UserController._userRepository.findById(userId);
@@ -60,7 +60,7 @@ export class UserController {
         }
     }
 
-    public async findByEmail(req: Request, res: Response) {
+    public async findByEmail(req: Request, res: Response): Promise<Response> {
         try {
             let userEmail: String = req.params.userEmail;
             let user: IUserDocument = await UserController._userRepository.findByEmail(userEmail);

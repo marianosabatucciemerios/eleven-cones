@@ -16,11 +16,11 @@ export class BaseRepository<T extends Document> implements IRead<T>, IWrite<T> {
     }
 
     public async update(id: String, item: T): Promise<T> {
-        return this._model.update({ _id: id }, item);
+        return this._model.findByIdAndUpdate( id, item, {new: true});
     }
 
     public async delete(id: String): Promise<T> {
-        return this._model.findByIdAndUpdate(id, { isActive: false, inactiveDate: new Date() });
+        return this._model.findByIdAndUpdate(id, { isActive: false, inactiveDate: new Date() }, {new: true});
     }
 
     // IRead
@@ -37,7 +37,7 @@ export class BaseRepository<T extends Document> implements IRead<T>, IWrite<T> {
     }
 
     public async findByCode(code: String): Promise<T> {
-        return this._model.findOne({ 'code': code });
+        return this._model.findOne({ code: code });
     }
 
     public async findOne(cond?: Object): Promise<T> {

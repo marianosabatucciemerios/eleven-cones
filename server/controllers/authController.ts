@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { hashSync, compare, compareSync } from 'bcryptjs';
+import { hashSync, compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken'
 import { jwtConfig } from "../config/jwtConfig";
 import { UserRepository } from '../repositories/UserRepository';

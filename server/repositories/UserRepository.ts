@@ -8,6 +8,6 @@ export class UserRepository extends BaseRepository<IUserDocument> {
     };
 
     public async findByEmail(email: String): Promise<IUserDocument> {
-        return UserSchema.findOne({ 'email': email, 'isActive': true });
+        return UserSchema.findOne({ email: email, isActive: true });
     }
 }

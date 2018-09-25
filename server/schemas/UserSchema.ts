@@ -5,7 +5,7 @@ let user = new Schema(
     {
         firstName: { type: String },
         lastName: { type: String },
-        email: { type: String, unique: true, lowercase: true },
+        email: { type: String, unique: true, lowercase: true, required: true },
         picture: { data: Buffer, contentType: String },
         birthDate: { type: Date },
         strongFoot: {
