@@ -15,13 +15,12 @@ export class UserRoutes {
     public get routes(): Router {
         let router = Router();
 
-        // router.post('/v1/users', this._authServices.verifyToken, this._userController.create);
-        // router.get('/v1/users', this._authServices.verifyToken, this._userController.findAll)
-        router.put('/v1/users/:userId', this._authServices.verifyToken, this._userController.update)
-        // router.get('/v1/users/:userId', this._authServices.verifyToken, this._userController.findById)
-        // router.delete('/v1/users/:userId', this._authServices.verifyToken, this._userController.delete)
-
-        // router.get('/v1/users/email/:userEmail', this._authServices.verifyToken, this._userController.findByEmail)
+        router.post('/v1/users', this._authServices.verifyToken, this._userController.create);
+        router.get('/v1/users', this._authServices.verifyToken, this._userController.findAll)
+        router.patch('/v1/users/:userId', this._authServices.verifyToken, this._userController.update)
+        router.get('/v1/users/:userId', this._authServices.verifyToken, this._userController.findById)
+        router.delete('/v1/users/:userId', this._authServices.verifyToken, this._userController.delete)
+        router.get('/v1/users/email/:userEmail', this._authServices.verifyToken, this._userController.findByEmail)
 
         return router;
     }

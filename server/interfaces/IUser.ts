@@ -3,28 +3,25 @@ import { IUnitMeasure } from './IUnitMeasure';
 import { IPassport } from './IPassport';
 
 export interface IUser {
-    firstName: String,
-    lastName: String,
+    firstName?: String,
+    lastName?: String,
+    email: String,
     picture?: String,
     birthdate?: Date,
     strongFoot?: IFoot,
+    backNumber?: Number,
     height?: IUnitMeasure,
     weight?: IUnitMeasure,
-    email: String,
-    phone?: {
-        country: String,
-        number: String
-    }
-    local?: {
-        password: String,
+    local: {
+        password?: String,
         passwordReset?: {
             token: String,
             expired: Date
         }
     },
-    facebook?: IPassport,
-    twitter?: IPassport,
-    google?: IPassport,
+    //facebook: IPassport,
+    //twitter: IPassport,
+    //google: IPassport,
     // roles: IRole[],
     // manageesTo: ITeam[],
     // playsOn: [
@@ -34,5 +31,6 @@ export interface IUser {
     //         position: IPosition
     //     }
     // ],
-    isActive?: Boolean
+    isActive: Boolean,
+    inactiveDate?: Date
 }

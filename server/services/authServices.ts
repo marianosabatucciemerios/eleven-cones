@@ -10,7 +10,6 @@ export class AuthorizationService {
         const VALIDATION_TOKEN: String = "VALIDATION_TOKEN";
 
         try {
-
             let token = req.headers['authorization'];
 
             if (!token) {
@@ -29,13 +28,10 @@ export class AuthorizationService {
                         message: 'Invalid authentication token.'
                     };
                 }
-
                 next();
             });
-
         } catch (err) {
             return res.status(401).json(err);
         }
-
     }
 }
