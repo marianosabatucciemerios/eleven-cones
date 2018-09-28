@@ -36,9 +36,10 @@ export const CONSTANTS: Object = {
 
     eventTypes: [
         { order: 1, code: 'GL', name: { en: 'Goal', es: 'Gol' } },
-        { order: 2, code: 'YC', name: { en: 'Yellow Card', es: 'Tarjeta Amarilla' } },
-        { order: 3, code: 'RC', name: { en: 'Red Card', es: 'Tarjeta Roja' } },
-        { order: 4, code: 'SB', name: { en: 'Substitution', es: 'Sustitución' } }
+        { order: 2, code: 'OG', name: { en: 'Own Goal', es: 'Gol en contra' } },
+        { order: 3, code: 'YC', name: { en: 'Yellow Card', es: 'Tarjeta Amarilla' } },
+        { order: 4, code: 'RC', name: { en: 'Red Card', es: 'Tarjeta Roja' } },
+        { order: 5, code: 'SB', name: { en: 'Substitution', es: 'Sustitución' } }
     ],
 
     scheduleTypes: [
