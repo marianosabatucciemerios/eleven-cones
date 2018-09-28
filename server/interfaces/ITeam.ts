@@ -8,6 +8,7 @@ export interface ITeam {
     builtDate: Date,
     homeColor?: String,
     awayColor?: String,
+    defaultLineupQty?: Number,
     shield?: String,
     cover?: String,
     isActive: Boolean

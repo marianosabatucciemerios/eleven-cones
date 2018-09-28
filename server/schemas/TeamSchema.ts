@@ -10,6 +10,7 @@ let team = new Schema(
         builtDate: { type: Date },
         homeColor: { type: String },
         awayColor: { type: String },
+        defaultLineupQty: { type: Number },
         shield: { data: Buffer, contentType: String },
         cover: { data: Buffer, contentType: String },
         isActive: { type: Boolean, default: true },
