@@ -21,10 +21,10 @@ class Server {
         new BaseDatabase();
 
             // -- HTTP -- //
-            // this.startNonSecureServer();
+            this.startNonSecureServer();
 
             // -- HTTPS -- //
-            this.startSecureServer();
+            // this.startSecureServer();
     }
 
 
